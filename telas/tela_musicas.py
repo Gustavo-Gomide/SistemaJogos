@@ -23,15 +23,15 @@ class TelaMusicas(Tela):
         super().__init__(
             largura=900, altura=650, titulo="Testar Músicas",
             cor_fundo=Cores.preto(), navegador=navegador,
-            imagem_fundo='love'  # Nome da imagem do dicionário de imagens
+            imagem_fundo='love'
         )
 
         self.navegador = navegador
         self.pagina = 'fundos'  # 'fundos' ou 'efeitos'
 
-        # Área rolável para botões de músicas/efeitos
+        # Área rolável para botões de músicas/efeitos (centralizada)
         self.scroll_area = ScrollArea(
-            x=120, y=140, largura=460, altura=260,
+            x=220, y=170, largura=460, altura=260,
             altura_conteudo=1000,
             cor_fundo=Cores.cinza_escuro(),
             cor_barra=Cores.menta()
@@ -46,50 +46,47 @@ class TelaMusicas(Tela):
         # Botão voltar ao menu (retrô)
         self.adicionar_componente(
             Botao(
-                x=20, y=20, largura=160, altura=38, texto='Voltar ao Menu',
+                x=30, y=30, largura=160, altura=38, texto='Voltar ao Menu',
                 cor_fundo=Cores.vermelho(), cor_hover=Cores.vermelho_escuro(),
                 cor_texto=Cores.branco(),
                 funcao=lambda: self.navegador.ir_para("menu") if self.navegador else self.sair,
-                fonte=Fontes.consolas(), tamanho_fonte=20, raio_borda=12,
-                imagem='geminiai'
+                fonte=Fontes.consolas(), tamanho_fonte=20, raio_borda=12
             )
         )
 
-        # Título retrô com sombra
+        # Título retrô com sombra (centralizado)
         self.adicionar_componente(
             TextoFormatado(
-                x=352, y=42, texto='TESTAR MÚSICAS',
-                tamanho=34, cor_texto=Cores.cinza_escuro(),
+                x=452, y=62, texto='TESTAR MÚSICAS',
+                tamanho=38, cor_texto=Cores.cinza_escuro(),
                 fonte_nome=Fontes.consolas(), centralizado=True
             )
         )
         self.adicionar_componente(
             TextoFormatado(
-                x=350, y=40, texto='TESTAR MÚSICAS',
-                tamanho=34, cor_texto=Cores.amarelo_ouro(),
+                x=450, y=60, texto='TESTAR MÚSICAS',
+                tamanho=38, cor_texto=Cores.amarelo_ouro(),
                 fonte_nome=Fontes.consolas(), centralizado=True
             )
         )
 
-        # Botões de abas (retrô)
+        # Botões de abas (retrô, centralizados)
         self.adicionar_componente(
             Botao(
-                x=180, y=90, largura=140, altura=38, texto='Fundos',
+                x=320, y=120, largura=120, altura=38, texto='Fundos',
                 cor_fundo=Cores.azul() if self.pagina == 'fundos' else Cores.cinza(),
                 cor_hover=Cores.azul_marinho(),
                 cor_texto=Cores.branco(), funcao=lambda: self.mudar_pagina('fundos'),
-                fonte=Fontes.consolas(), tamanho_fonte=22, raio_borda=10,
-                imagem='geminiai'
+                fonte=Fontes.consolas(), tamanho_fonte=22, raio_borda=10
             )
         )
         self.adicionar_componente(
             Botao(
-                x=380, y=90, largura=140, altura=38, texto='Efeitos',
+                x=470, y=120, largura=120, altura=38, texto='Efeitos',
                 cor_fundo=Cores.azul() if self.pagina == 'efeitos' else Cores.cinza(),
                 cor_hover=Cores.azul_marinho(),
                 cor_texto=Cores.branco(), funcao=lambda: self.mudar_pagina('efeitos'),
-                fonte=Fontes.consolas(), tamanho_fonte=22, raio_borda=10,
-                imagem='geminiai'
+                fonte=Fontes.consolas(), tamanho_fonte=22, raio_borda=10
             )
         )
 
@@ -104,8 +101,7 @@ class TelaMusicas(Tela):
                     cor_hover=Cores.verde_escuro(),
                     cor_texto=Cores.preto(),
                     funcao=lambda n=nome: Musicas.tocar_fundo(n, volume=self.navegador.volume_fundo),
-                    fonte=Fontes.consolas(), tamanho_fonte=20, raio_borda=10,
-                    imagem='geminiai'
+                    fonte=Fontes.consolas(), tamanho_fonte=20, raio_borda=10
                 )
                 self.scroll_area.adicionar_componente(btn)
             self.scroll_area.altura_conteudo = max(260, len(fundos)*55)
@@ -118,39 +114,35 @@ class TelaMusicas(Tela):
                     cor_hover=Cores.laranja_escuro(),
                     cor_texto=Cores.preto(),
                     funcao=lambda n=nome: Musicas.tocar_efeito(n, volume=self.navegador.volume_efeito),
-                    fonte=Fontes.consolas(), tamanho_fonte=18, raio_borda=10,
-                    imagem='geminiai'
+                    fonte=Fontes.consolas(), tamanho_fonte=18, raio_borda=10
                 )
                 self.scroll_area.adicionar_componente(btn)
             self.scroll_area.altura_conteudo = max(260, len(efeitos)*45)
         self.adicionar_componente(self.scroll_area)
 
-        # Botões de controle de música de fundo (retrô)
+        # Botões de controle de música de fundo (centralizados, sem imagem, com cor de fundo)
         self.adicionar_componente(
             Botao(
-                x=140, y=430, largura=120, altura=40, texto='Play',
+                x=290, y=470, largura=100, altura=40, texto='Play',
                 cor_fundo=Cores.menta(), cor_hover=Cores.verde(),
                 cor_texto=Cores.preto(),
-                funcao=Musicas.retomar_fundo, fonte=Fontes.consolas(), tamanho_fonte=20, raio_borda=10,
-                imagem='geminiai'
+                funcao=lambda: Musicas.retomar_fundo(), fonte=Fontes.consolas(), tamanho_fonte=20, raio_borda=10
             )
         )
         self.adicionar_componente(
             Botao(
-                x=290, y=430, largura=120, altura=40, texto='Pausar',
+                x=410, y=470, largura=100, altura=40, texto='Pausar',
                 cor_fundo=Cores.azul_royal(), cor_hover=Cores.azul_marinho(),
                 cor_texto=Cores.branco(),
-                funcao=Musicas.pausar_fundo, fonte=Fontes.consolas(), tamanho_fonte=20, raio_borda=10,
-                imagem='geminiai'
+                funcao=lambda: Musicas.pausar_fundo(), fonte=Fontes.consolas(), tamanho_fonte=20, raio_borda=10
             )
         )
         self.adicionar_componente(
             Botao(
-                x=440, y=430, largura=120, altura=40, texto='Parar',
+                x=530, y=470, largura=100, altura=40, texto='Parar',
                 cor_fundo=Cores.vermelho(), cor_hover=Cores.vermelho_escuro(),
                 cor_texto=Cores.branco(),
-                funcao=Musicas.parar_fundo, fonte=Fontes.consolas(), tamanho_fonte=20, raio_borda=10,
-                imagem='geminiai'
+                funcao=lambda: Musicas.parar_fundo(), fonte=Fontes.consolas(), tamanho_fonte=20, raio_borda=10
             )
         )
 
