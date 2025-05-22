@@ -10,7 +10,7 @@ Sistema de jogos retrô feito em Python com Pygame e MySQL.
 
 Abra o terminal e execute:
 ```sh
-git clone https://github.com/seu-usuario/seu-repo.git
+git clone https://github.com/Gustavo-Gomide/SistemaJogos.git
 cd caminho/para/pasta/pygame
 ```
 
