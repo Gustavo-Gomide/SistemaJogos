@@ -49,7 +49,7 @@ class Navegador:
         """
         self.telas[nome] = funcao_construtora
 
-    def ir_para(self, nome):
+    def ir_para(self, nome, *args):
         """
         Troca para a tela registrada com o nome informado.
 
@@ -62,7 +62,7 @@ class Navegador:
         A tela recebe o próprio navegador como argumento, permitindo acessar atributos globais (como apelido_logado).
         """
         if nome in self.telas:
-            tela = self.telas[nome](self)  # Passa o próprio navegador para a tela
+            tela = self.telas[nome](self, *args)  # Passa o próprio navegador para a tela
             self.tela_atual = tela
             tela.rodar()
         else:

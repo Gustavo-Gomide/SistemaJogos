@@ -121,16 +121,7 @@ class TelaMenu(Tela):
 
         # Exemplo de jogos disponíveis (substitua pelos seus jogos reais)
         jogos_disponiveis = [
-            {"nome": "Snake Retrô", "acao": lambda: self.navegador.ir_para("snake")},
-            {"nome": "Tetris Clássico", "acao": lambda: self.navegador.ir_para("tetris")},
-            {"nome": "Pong Vintage", "acao": lambda: self.navegador.ir_para("pong")},
-            {"nome": "Space Invaders", "acao": lambda: self.navegador.ir_para("spaceinvaders")},
-            {"nome": "Pac-Man", "acao": lambda: self.navegador.ir_para("pacman")},
-            {"nome": "Snake Retrô", "acao": lambda: self.navegador.ir_para("snake")},
-            {"nome": "Tetris Clássico", "acao": lambda: self.navegador.ir_para("tetris")},
-            {"nome": "Pong Vintage", "acao": lambda: self.navegador.ir_para("pong")},
-            {"nome": "Space Invaders", "acao": lambda: self.navegador.ir_para("spaceinvaders")},
-            {"nome": "Pac-Man", "acao": lambda: self.navegador.ir_para("pacman")},
+            {"nome": "Pong Vintage", "acao": lambda: self.navegador.ir_para("menu pong-pong")},
             # Adicione mais jogos conforme necessário
         ]
 

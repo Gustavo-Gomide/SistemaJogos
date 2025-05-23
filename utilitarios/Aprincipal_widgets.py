@@ -1028,3 +1028,131 @@ class Slider:
             # Atualiza valor conforme posição do mouse
             novo_valor = (mx - self.x) / self.largura
             self.valor = max(0.0, min(1.0, novo_valor))
+
+
+class Retangulo:
+    """
+    Componente gráfico de retângulo, ideal para representar raquetes ou barras verticais/horizontais.
+
+    Como usar:
+    ----------
+    1. Instancie o retângulo:
+        raquete = Retangulo(x=0, y=100, largura=15, altura=100, cor=Cores.verde())
+    2. Adicione à tela ou use diretamente em jogos:
+        raquete.desenhar(tela)
+
+    Parâmetros:
+    -----------
+    - x, y (int): Posição do canto superior esquerdo.
+    - largura, altura (int): Tamanho do retângulo.
+    - cor (tuple): Cor de fundo (use Cores).
+    - imagem (str, opcional): Caminho ou nome da imagem para desenhar por cima da cor.
+
+    Métodos principais:
+    -------------------
+    - desenhar(tela): Desenha o retângulo na tela.
+    - atualizar(limite_superior, limite_inferior): Move o retângulo verticalmente, respeitando limites.
+    - set_dy(dy): Define a velocidade vertical.
+    """
+    def __init__(self, x, y, largura, altura, cor, imagem=None):
+        self.x = x
+        self.y = y
+        self.largura = largura
+        self.altura = altura
+        self.cor = cor
+        self.imagem = None
+        if imagem:
+            from utilitarios.imagens import carregar_imagem
+            self.imagem = carregar_imagem(imagem, (largura, altura))
+        self.dy = 0  # Velocidade vertical
+
+    def desenhar(self, tela):
+        """
+        Desenha o retângulo na tela.
+        Sempre desenha a cor de fundo e, se existir, uma imagem por cima.
+        """
+        rect = pygame.Rect(self.x, self.y, self.largura, self.altura)
+        pygame.draw.rect(tela, self.cor, rect, border_radius=8)
+        if self.imagem:
+            tela.blit(self.imagem, rect)
+        pygame.draw.rect(tela, (0, 0, 0), rect, 2, border_radius=8)  # Borda preta
+
+    def atualizar(self, limite_superior, limite_inferior):
+        """
+        Move o retângulo verticalmente, impedindo que ultrapasse os limites da tela.
+        """
+        self.y += self.dy
+        self.y = max(limite_superior, min(limite_inferior - self.altura, self.y))
+
+    def set_dy(self, dy):
+        """
+        Define a velocidade vertical do retângulo.
+        """
+        self.dy = dy
+
+class Circulo:
+    """
+    Componente gráfico de círculo, ideal para representar bolas ou elementos circulares.
+
+    Como usar:
+    ----------
+    1. Instancie o círculo:
+        bola = Circulo(x=300, y=200, raio=12, cor=Cores.amarelo_ouro())
+    2. Adicione à tela ou use diretamente em jogos:
+        bola.desenhar(tela)
+
+    Parâmetros:
+    -----------
+    - x, y (int): Centro do círculo.
+    - raio (int): Raio do círculo.
+    - cor (tuple): Cor de fundo (use Cores).
+    - imagem (str, opcional): Caminho ou nome da imagem para desenhar por cima da cor.
+
+    Métodos principais:
+    -------------------
+    - desenhar(tela): Desenha o círculo na tela, com máscara para não ultrapassar o formato.
+    - atualizar(): Move o círculo conforme sua velocidade.
+    - set_direcao(dx, dy): Define a velocidade horizontal e vertical.
+    """
+    def __init__(self, x, y, raio, cor, imagem=None):
+        self.x = x
+        self.y = y
+        self.raio = raio
+        self.cor = cor
+        self.imagem = None
+        if imagem:
+            from utilitarios.imagens import carregar_imagem
+            self.imagem = carregar_imagem(imagem, (raio*2, raio*2))
+        self.dx = 0  # Velocidade horizontal
+        self.dy = 0  # Velocidade vertical
+
+    def desenhar(self, tela):
+        """
+        Desenha o círculo na tela.
+        Sempre desenha a cor de fundo e, se existir, uma imagem por cima (recortada para não ultrapassar o círculo).
+        """
+        pygame.draw.circle(tela, self.cor, (int(self.x), int(self.y)), self.raio)
+        if self.imagem:
+            # Cria uma superfície temporária com canal alpha
+            temp = pygame.Surface((self.raio*2, self.raio*2), pygame.SRCALPHA)
+            temp.blit(self.imagem, (0, 0))
+            # Máscara circular para "overflow: hidden"
+            mask = pygame.Surface((self.raio*2, self.raio*2), pygame.SRCALPHA)
+            pygame.draw.circle(mask, (255,255,255,255), (self.raio, self.raio), self.raio)
+            temp.blit(mask, (0,0), special_flags=pygame.BLEND_RGBA_MULT)
+            tela.blit(temp, (int(self.x)-self.raio, int(self.y)-self.raio))
+        pygame.draw.circle(tela, (0, 0, 0), (int(self.x), int(self.y)), self.raio, 2)  # Borda preta
+
+    def atualizar(self):
+        """
+        Move o círculo conforme sua velocidade.
+        """
+        self.x += self.dx
+        self.y += self.dy
+
+    def set_direcao(self, dx, dy):
+        """
+        Define a velocidade horizontal (dx) e vertical (dy) do círculo.
+        """
+        self.dx = dx
+        self.dy = dy
