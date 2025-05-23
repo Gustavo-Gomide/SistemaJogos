@@ -3,7 +3,7 @@ from utilitarios.Aprincipal_widgets import Tela, Botao, Cores, TextoFormatado, F
 class TelaMenuPongPong(Tela):
     """
     Tela de menu inicial do PongPong.
-    Permite acessar: Jogar, Ranking e Configurações.
+    Permite acessar: Jogar, Ranking, Histórico e Configurações.
     """
 
     def __init__(self, navegador=None):
@@ -35,7 +35,7 @@ class TelaMenuPongPong(Tela):
                 x=200, y=160, largura=300, altura=60, texto="▶ Jogar",
                 cor_fundo=Cores.verde(), cor_hover=Cores.verde_escuro(),
                 cor_texto=Cores.preto(),
-                funcao=lambda: self.navegador.ir_para("jogo pong-pong"),
+                funcao=lambda: self.navegador.ir_para("selecao jogadores pong-pong"),
                 fonte=Fontes.consolas(), tamanho_fonte=28, raio_borda=16
             )
         )
@@ -51,10 +51,21 @@ class TelaMenuPongPong(Tela):
             )
         )
 
+        # Botão Histórico
+        self.adicionar_componente(
+            Botao(
+                x=200, y=320, largura=300, altura=60, texto="📜 Histórico",
+                cor_fundo=Cores.cinza(), cor_hover=Cores.cinza_escuro(),
+                cor_texto=Cores.preto(),
+                funcao=lambda: self.navegador.ir_para("historico pong-pong") if self.navegador else None,
+                fonte=Fontes.consolas(), tamanho_fonte=28, raio_borda=16
+            )
+        )
+
         # Botão Configurações
         self.adicionar_componente(
             Botao(
-                x=200, y=320, largura=300, altura=60, texto="⚙️ Configurações",
+                x=200, y=400, largura=300, altura=60, texto="⚙️ Configurações",
                 cor_fundo=Cores.azul(), cor_hover=Cores.azul_escuro(),
                 cor_texto=Cores.branco(),
                 funcao=lambda: self.navegador.ir_para("configurações pong-pong") if self.navegador else None,

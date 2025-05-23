@@ -37,6 +37,8 @@ class Navegador:
         self.id_logado = None  # ID do usuário logado (pode ser usado por todas as telas)
         self.volume_efeito = 0.7   # Volume global para efeitos (0.0 a 1.0)
         self.volume_fundo = 0.5    # Volume global para fundos/músicas (0.0 a 1.0)
+        self.jgd_2 = None  # Jogador 2 (usado em jogos multiplayer)
+        self.jgd_2_id = None  # ID do jogador 2 (usado em jogos multiplayer)
 
     def registrar_tela(self, nome, funcao_construtora):
         """

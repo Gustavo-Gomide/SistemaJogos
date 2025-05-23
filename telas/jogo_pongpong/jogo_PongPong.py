@@ -1,7 +1,9 @@
-from calendar import c
 from utilitarios.Aprincipal_widgets import Tela, Botao, Cores, TextoFormatado, Fontes, Retangulo, Circulo
 from utilitarios.imagens import carregar_imagem
+from utilitarios.musicas import Musicas  # Adicione este import
+from databases.PongPong_database import PongPongDB
 import pygame
+import time
 
 class TelaJogoPongPong(Tela):
     """
@@ -18,6 +20,12 @@ class TelaJogoPongPong(Tela):
     fundo_cor = Cores.preto()
     fundo_imagem = None
     velocidade_bola = 1  # <--- Ajustável
+
+    # Efeitos sonoros e música
+    efeito_gol = 'fim'         # Nome do efeito para gol
+    efeito_parede = 'correto'  # Nome do efeito para parede
+    efeito_raquete = 'coins'   # Nome do efeito para raquete
+    musica_fundo = 'jogo'      # Nome da música de fundo
 
     fundo_surface = None  # Surface pronto para desenhar
 
@@ -51,13 +59,18 @@ class TelaJogoPongPong(Tela):
                 x=30, y=590, largura=180, altura=45, texto='Voltar ao Menu',
                 cor_fundo=Cores.azul(), cor_hover=Cores.azul_escuro(),
                 cor_texto=Cores.branco(),
-                funcao=lambda: self.navegador.ir_para("menu pong-pong") if self.navegador else self.sair,
+                funcao=lambda: (Musicas.parar_fundo(), self.navegador.ir_para("menu pong-pong")) if self.navegador else self.sair,
                 fonte=Fontes.consolas(), tamanho_fonte=22, raio_borda=12
             )
         )
 
         self.atualizar_fundo()
         self.resetar_jogo()
+        # Use o volume global do navegador, se existir, senão 0.4
+        Musicas.tocar_fundo(
+            self.musica_fundo,
+            volume=getattr(self.navegador, "volume_fundo", 0.4)
+        )
 
     def resetar_jogo(self):
         self.paddle_height = 100
@@ -83,6 +96,7 @@ class TelaJogoPongPong(Tela):
         self.ball.set_direcao(v, v)
         self.score1 = 0
         self.score2 = 0
+        self.tempo_inicio = time.time()
 
     def atualizar(self):
         # Movimento dos jogadores
@@ -110,17 +124,29 @@ class TelaJogoPongPong(Tela):
         # Colisão com topo/baixo
         if self.ball.y - self.ball.raio <= 0 or self.ball.y + self.ball.raio >= self.altura:
             self.ball.dy *= -1
+            Musicas.tocar_efeito(
+                self.efeito_parede,
+                volume=getattr(self.navegador, "volume_efeito", 0.6)
+            )
 
         # Colisão com raquetes
         if (self.ball.x - self.ball.raio <= self.paddle1.x + self.paddle1.largura and
             self.paddle1.y < self.ball.y < self.paddle1.y + self.paddle1.altura):
             self.ball.dx = abs(self.ball.dx)
             self.ball.x = self.paddle1.x + self.paddle1.largura + self.ball.raio
+            Musicas.tocar_efeito(
+                self.efeito_raquete,
+                volume=getattr(self.navegador, "volume_efeito", 0.7)
+            )
 
         if (self.ball.x + self.ball.raio >= self.paddle2.x and
             self.paddle2.y < self.ball.y < self.paddle2.y + self.paddle2.altura):
             self.ball.dx = -abs(self.ball.dx)
             self.ball.x = self.paddle2.x - self.ball.raio
+            Musicas.tocar_efeito(
+                self.efeito_raquete,
+                volume=getattr(self.navegador, "volume_efeito", 0.7)
+            )
 
         # Pontuação
         if self.ball.x < 0:
@@ -129,12 +155,93 @@ class TelaJogoPongPong(Tela):
             self.ball.y = self.altura // 2
             v = self.velocidade_bola
             self.ball.set_direcao(v, v)
+            Musicas.tocar_efeito(
+                self.efeito_gol,
+                volume=getattr(self.navegador, "volume_efeito", 0.8)
+            )
         if self.ball.x > self.largura:
             self.score1 += 1
             self.ball.x = self.largura // 2
             self.ball.y = self.altura // 2
             v = self.velocidade_bola
             self.ball.set_direcao(-v, v)
+            Musicas.tocar_efeito(
+                self.efeito_gol,
+                volume=getattr(self.navegador, "volume_efeito", 0.8)
+            )
+
+        # Lógica de vitória (quem faz 5 pontos)
+        if self.score1 >= 5 or self.score2 >= 5:
+            vencedor = self.navegador.apelido_logado if self.score1 >= 5 else self.navegador.jgd_2
+            self.mostrar_vencedor(vencedor)
+
+    def mostrar_vencedor(self, vencedor):
+        import time
+        tempo_jogado = int(time.time() - getattr(self, "tempo_inicio", time.time()))
+
+        # Jogador 1 (esquerda)
+        if self.navegador.id_logado:
+            PongPongDB.registrar_partida(
+                id_usuario=self.navegador.id_logado,
+                apelido=self.navegador.apelido_logado,
+                pontuacao=self.score1,
+                venceu=(vencedor == self.navegador.apelido_logado),
+                tempo_jogado=tempo_jogado
+            )
+        # Jogador 2 (direita)
+        if self.navegador.jgd_2_id:
+            PongPongDB.registrar_partida(
+                id_usuario=self.navegador.jgd_2_id,
+                apelido=self.navegador.jgd_2,
+                pontuacao=self.score2,
+                venceu=(vencedor == self.navegador.jgd_2),
+                tempo_jogado=tempo_jogado
+            )
+
+        rodando = True
+        clock = pygame.time.Clock()
+        fonte = pygame.font.SysFont("consolas", 44, bold=True)
+        fonte_btn = pygame.font.SysFont("consolas", 28, bold=True)
+        texto = f"{vencedor} venceu!"
+        texto_render = fonte.render(texto, True, Cores.amarelo_ouro())
+
+        # Botões
+        btn_jogar = pygame.Rect(self.largura // 2 - 180, self.altura // 2 + 40, 160, 50)
+        btn_menu = pygame.Rect(self.largura // 2 + 20, self.altura // 2 + 40, 160, 50)
+
+        while rodando:
+            self.tela.fill(Cores.preto())
+            # Fundo opcional
+            if TelaJogoPongPong.fundo_surface:
+                self.tela.blit(TelaJogoPongPong.fundo_surface, (0, 0))
+            # Mensagem
+            self.tela.blit(texto_render, (self.largura // 2 - texto_render.get_width() // 2, self.altura // 2 - 60))
+
+            # Botão Jogar Novamente
+            pygame.draw.rect(self.tela, Cores.verde(), btn_jogar, border_radius=10)
+            txt_jogar = fonte_btn.render("Jogar Novamente", True, Cores.preto())
+            self.tela.blit(txt_jogar, (btn_jogar.x + (btn_jogar.width - txt_jogar.get_width()) // 2, btn_jogar.y + 10))
+
+            # Botão Voltar ao Menu
+            pygame.draw.rect(self.tela, Cores.azul(), btn_menu, border_radius=10)
+            txt_menu = fonte_btn.render("Voltar ao Menu", True, Cores.branco())
+            self.tela.blit(txt_menu, (btn_menu.x + (btn_menu.width - txt_menu.get_width()) // 2, btn_menu.y + 10))
+
+            pygame.display.flip()
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    rodando = False
+                    pygame.quit()
+                    return
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    if btn_jogar.collidepoint(event.pos):
+                        self.resetar_jogo()
+                        return  # Sai do método e volta ao jogo
+                    if btn_menu.collidepoint(event.pos):
+                        self.navegador.ir_para("menu pong-pong")
+                        return
+            clock.tick(30)
 
     def renderizar(self):
         # Fundo: sempre desenha cor, depois imagem se existir
@@ -163,6 +270,21 @@ class TelaJogoPongPong(Tela):
         placar2 = fonte.render(f"{self.score2}", True, Cores.vermelho())
         tela.blit(placar1, (self.largura // 4 - placar1.get_width() // 2, 20))
         tela.blit(placar2, (3 * self.largura // 4 - placar2.get_width() // 2, 20))
+
+        # Nome dos jogadores ao lado do placar, com sombra para contraste
+        nome1 = self.navegador.apelido_logado or "Visitante 1"
+        nome2 = self.navegador.jgd_2 or "Visitante 2"
+        fonte_nome = pygame.font.SysFont("consolas", 22, bold=True)
+        # Sombra
+        nome1_sombra = fonte_nome.render(nome1, True, Cores.preto())
+        nome2_sombra = fonte_nome.render(nome2, True, Cores.preto())
+        tela.blit(nome1_sombra, (self.largura // 4 - nome1_sombra.get_width() // 2 + 2, 60 + 2))
+        tela.blit(nome2_sombra, (3 * self.largura // 4 - nome2_sombra.get_width() // 2 + 2, 60 + 2))
+        # Nome
+        nome1_render = fonte_nome.render(nome1, True, Cores.verde())
+        nome2_render = fonte_nome.render(nome2, True, Cores.azul())
+        tela.blit(nome1_render, (self.largura // 4 - nome1_render.get_width() // 2, 60))
+        tela.blit(nome2_render, (3 * self.largura // 4 - nome2_render.get_width() // 2, 60))
 
         pygame.display.flip()
 

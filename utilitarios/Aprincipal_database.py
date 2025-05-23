@@ -1,4 +1,4 @@
-import re
+from tracemalloc import Statistic
 import mysql.connector as mysql
 
 class BancoDados:
@@ -8,12 +8,20 @@ class BancoDados:
     """
 
     # Configurações de conexão (ajuste conforme necessário)
-    CONFIG = {
-        'host': 'localhost',
-        'user': 'root',
-        'password': '',
-        'database': 'jogos'  # usado apenas quando o banco já existe
-    }
+    @staticmethod
+    def config(host='localhost', user='root', password='', database='jogos'):
+        """
+        Configurações de conexão com o banco de dados.
+        :return: Dicionário com as configurações.
+        """
+        return {
+            'host': host,
+            'user': user,
+            'password': password,
+            'database': database
+        }
+    
+    CONFIG = config()
 
     @classmethod
     def criar_database(cls):
@@ -28,9 +36,9 @@ class BancoDados:
                 password=cls.CONFIG['password']
             )
             cursor = conexao.cursor()
-            cursor.execute("CREATE DATABASE IF NOT EXISTS jogos")
+            cursor.execute(f"CREATE DATABASE IF NOT EXISTS {cls.CONFIG['database']}")
             conexao.commit()
-            print("✅ Banco de dados 'jogos' criado ou já existente.")
+            print(f"✅ Banco de dados {cls.CONFIG['database']} criado ou já existente.")
         except mysql.Error as erro:
             print(f"❌ Erro ao criar o banco de dados: {erro}")
         finally:
