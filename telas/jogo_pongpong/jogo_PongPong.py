@@ -2,6 +2,7 @@ from utilitarios.Aprincipal_widgets import Tela, Botao, Cores, TextoFormatado, F
 from utilitarios.imagens import carregar_imagem
 from utilitarios.musicas import Musicas  # Adicione este import
 from databases.PongPong_database import PongPongDB
+from databases.cadastro_database import DadosUsuario
 import pygame
 import time
 
@@ -17,15 +18,15 @@ class TelaJogoPongPong(Tela):
     paddle2_imagem = None
     bola_cor = Cores.amarelo_ouro()
     bola_imagem = None
-    fundo_cor = Cores.preto()
+    fundo_cor = Cores.azul_petroleo()
     fundo_imagem = None
-    velocidade_bola = 1  # <--- Ajustável
+    velocidade_bola = 5  # <--- Ajustável
+    tempo_espera_bola = 2  # segundos (ajustável)
 
     # Efeitos sonoros e música
     efeito_gol = 'fim'         # Nome do efeito para gol
     efeito_parede = 'correto'  # Nome do efeito para parede
     efeito_raquete = 'coins'   # Nome do efeito para raquete
-    musica_fundo = 'jogo'      # Nome da música de fundo
 
     fundo_surface = None  # Surface pronto para desenhar
 
@@ -59,18 +60,13 @@ class TelaJogoPongPong(Tela):
                 x=30, y=590, largura=180, altura=45, texto='Voltar ao Menu',
                 cor_fundo=Cores.azul(), cor_hover=Cores.azul_escuro(),
                 cor_texto=Cores.branco(),
-                funcao=lambda: (Musicas.parar_fundo(), self.navegador.ir_para("menu pong-pong")) if self.navegador else self.sair,
+                funcao=lambda: self.navegador.ir_para("menu pong-pong") if self.navegador else self.sair,
                 fonte=Fontes.consolas(), tamanho_fonte=22, raio_borda=12
             )
         )
 
         self.atualizar_fundo()
         self.resetar_jogo()
-        # Use o volume global do navegador, se existir, senão 0.4
-        Musicas.tocar_fundo(
-            self.musica_fundo,
-            volume=getattr(self.navegador, "volume_fundo", 0.4)
-        )
 
     def resetar_jogo(self):
         self.paddle_height = 100
@@ -97,8 +93,18 @@ class TelaJogoPongPong(Tela):
         self.score1 = 0
         self.score2 = 0
         self.tempo_inicio = time.time()
+        self.vel_bola_temp = self.velocidade_bola
+        self.tempo_reinicio = time.time()
 
     def atualizar(self):
+        # Pausa após gol ou início
+        if self.vel_bola_temp != 0:
+            self.velocidade_bola = 0
+            if time.time() - self.tempo_reinicio >= self.tempo_espera_bola:
+                self.velocidade_bola = self.vel_bola_temp
+            else:
+                return  # Não atualiza o jogo enquanto pausado
+
         # Movimento dos jogadores
         keys = pygame.key.get_pressed()
         if keys[pygame.K_w]:
@@ -159,6 +165,10 @@ class TelaJogoPongPong(Tela):
                 self.efeito_gol,
                 volume=getattr(self.navegador, "volume_efeito", 0.8)
             )
+            self.vel_bola_temp = self.velocidade_bola
+            self.tempo_reinicio = time.time()
+            return  # Sai do método para pausar imediatamente
+
         if self.ball.x > self.largura:
             self.score1 += 1
             self.ball.x = self.largura // 2
@@ -169,6 +179,9 @@ class TelaJogoPongPong(Tela):
                 self.efeito_gol,
                 volume=getattr(self.navegador, "volume_efeito", 0.8)
             )
+            self.vel_bola_temp = self.velocidade_bola
+            self.tempo_reinicio = time.time()
+            return  # Sai do método para pausar imediatamente
 
         # Lógica de vitória (quem faz 5 pontos)
         if self.score1 >= 5 or self.score2 >= 5:
@@ -179,24 +192,35 @@ class TelaJogoPongPong(Tela):
         import time
         tempo_jogado = int(time.time() - getattr(self, "tempo_inicio", time.time()))
 
-        # Jogador 1 (esquerda)
-        if self.navegador.id_logado:
-            PongPongDB.registrar_partida(
-                id_usuario=self.navegador.id_logado,
-                apelido=self.navegador.apelido_logado,
-                pontuacao=self.score1,
-                venceu=(vencedor == self.navegador.apelido_logado),
-                tempo_jogado=tempo_jogado
-            )
-        # Jogador 2 (direita)
-        if self.navegador.jgd_2_id:
-            PongPongDB.registrar_partida(
-                id_usuario=self.navegador.jgd_2_id,
-                apelido=self.navegador.jgd_2,
-                pontuacao=self.score2,
-                venceu=(vencedor == self.navegador.jgd_2),
-                tempo_jogado=tempo_jogado
-            )
+        # Jogador 1
+        if getattr(self.navegador, "id_logado", None):
+            id_j1 = self.navegador.id_logado
+            apelido_j1 = self.navegador.apelido_logado
+            DadosUsuario.atualizar_pontuacao_jogo(apelido_j1, "dino", self.score1, tempo=tempo_jogado)
+        else:
+            id_j1 = None
+            apelido_j1 = "Visitante 1"
+
+        # Jogador 2
+        if getattr(self.navegador, "jgd_2_id", None):
+            id_j2 = self.navegador.jgd_2_id
+            apelido_j2 = self.navegador.jgd_2
+            DadosUsuario.atualizar_pontuacao_jogo(apelido_j2, "dino", self.score2, tempo=tempo_jogado)
+        else:
+            id_j2 = None
+            apelido_j2 = "Visitante 2"
+
+        # Registro completo da partida
+        PongPongDB.registrar_partida(
+            id_usuario_j1=id_j1,
+            apelido_j1=apelido_j1,
+            id_usuario_j2=id_j2,
+            apelido_j2=apelido_j2,
+            pontuacao_j1=self.score1,
+            pontuacao_j2=self.score2,
+            vencedor=vencedor,
+            tempo_jogado=tempo_jogado
+        )
 
         rodando = True
         clock = pygame.time.Clock()

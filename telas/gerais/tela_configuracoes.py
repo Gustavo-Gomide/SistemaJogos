@@ -1,5 +1,6 @@
 from utilitarios.Aprincipal_widgets import Tela, Botao, Cores, TextoFormatado, Slider, Fontes
 from utilitarios.musicas import Musicas
+from databases.musica_anterior import MusicaAnterior
 
 class TelaConfiguracoes(Tela):
     """
@@ -16,6 +17,8 @@ class TelaConfiguracoes(Tela):
             navegador=navegador
         )
         self.navegador = navegador
+
+        Musicas.salvar_musica_anterior()
 
         # Título retrô com sombra dupla e fonte pixelada
         self.adicionar_componente(TextoFormatado(
@@ -84,7 +87,7 @@ class TelaConfiguracoes(Tela):
                 x=270, y=370, largura=200, altura=48, texto='Voltar ao Menu',
                 cor_fundo=Cores.verde(), cor_hover=Cores.verde_escuro(),
                 cor_texto=Cores.preto(), fonte=Fontes.consolas(), tamanho_fonte=24,
-                funcao=lambda: self.navegador.ir_para("menu"), raio_borda=16
+                funcao=self.voltar_para_menu, raio_borda=16
             )
         )
 

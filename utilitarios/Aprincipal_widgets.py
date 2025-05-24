@@ -1,6 +1,8 @@
+from eel import sleep
 import pygame
 import sys
 from typing import Callable
+from databases.musica_anterior import MusicaAnterior
 
 pygame.init()
 
@@ -413,7 +415,7 @@ class Tela:
     Você NÃO precisa se preocupar com eventos do Pygame ou atualização dos componentes.
     Basta adicionar os componentes e chamar tela.rodar().
     """
-    def __init__(self, largura=600, altura=600, titulo="Tela", cor_fundo=Cores.preto(), navegador=None, imagem_fundo=None, logo=None):
+    def __init__(self, largura=600, altura=600, titulo="Tela", cor_fundo=Cores.preto(), navegador=None, imagem_fundo=None, logo=None, som_fundo=None, trocar_fundo = False, tela_selecao_musica = False, efeito_saida='sair'):
         self.largura = largura
         self.altura = altura
         self.titulo = titulo
@@ -424,6 +426,23 @@ class Tela:
         self.tela_cheia = False
         self.tela = pygame.display.set_mode((largura, altura))
         pygame.display.set_caption(titulo)
+        self.trocar_fundo = trocar_fundo
+        self.tela_selecao_musica = tela_selecao_musica
+        self.som_fundo = None
+        if som_fundo:
+            from utilitarios.musicas import Musicas
+            self.som_fundo = som_fundo
+            print('som_fundo', self.som_fundo)
+            if self.tela_selecao_musica:
+                print('tela_selecao_musica', self.som_fundo)
+            if Musicas.esta_tocando():
+                if trocar_fundo:
+                    Musicas.tocar_fundo(self.som_fundo, volume=self.navegador.volume_fundo)
+            else:
+                Musicas.tocar_fundo(self.som_fundo, volume=self.navegador.volume_fundo)
+        self.efeito_saida = None
+        if efeito_saida:
+            self.efeito_saida = efeito_saida
         self.componentes = []
 
         # --- NOVO: define o ícone da janela se logo for fornecida ---
@@ -442,7 +461,14 @@ class Tela:
     def processar_eventos(self):
         """Processa eventos do Pygame e repassa para os componentes."""
         for evento in pygame.event.get():
+            if self.tela_selecao_musica:
+                self.navegador.musica_fundo = self.som_fundo
             if evento.type == pygame.QUIT or (evento.type == pygame.KEYDOWN and evento.key == pygame.K_ESCAPE):
+                from utilitarios.musicas import Musicas
+                if Musicas.esta_tocando():
+                    Musicas.parar_fundo()
+                Musicas.tocar_efeito(self.efeito_saida, volume=self.navegador.volume_efeito)
+                sleep(1)
                 pygame.quit()
                 sys.exit()
             if evento.type == pygame.KEYDOWN and evento.key == pygame.K_F11:
@@ -452,9 +478,14 @@ class Tela:
                 else:
                     self.tela = pygame.display.set_mode((self.largura, self.altura), pygame.FULLSCREEN)
                 self.tela_cheia = not self.tela_cheia
+            if evento.type == pygame.MOUSEBUTTONDOWN:
+                print('som_fundo', MusicaAnterior.get_musica_anterior())
+                if self.tela_selecao_musica:
+                    print('tela_selecao_musica', MusicaAnterior.get_musica_anterior())
             for componente in self.componentes:
                 if hasattr(componente, 'processar_evento'):
                     componente.processar_evento(evento)
+
 
     def atualizar(self):
         """Atualiza todos os componentes (caso necessário)."""
@@ -490,6 +521,16 @@ class Tela:
             self.atualizar()
             self.renderizar()
             pygame.time.Clock().tick(60)
+
+    def voltar_para_menu(self):
+        from utilitarios.musicas import Musicas
+        musica_ant = MusicaAnterior.get_musica_anterior()
+        if musica_ant and musica_ant != "parado":
+            Musicas.tocar_fundo(musica_ant, self.navegador.volume_fundo)
+        else:
+            Musicas.parar_fundo()
+        if self.navegador:
+            self.navegador.ir_para("menu")
 
 # =========================
 # CLASSE BOTÃO
@@ -527,8 +568,12 @@ class Botao:
     Você NÃO precisa chamar desenhar, processar_evento ou atualizar manualmente.
     O sistema faz isso automaticamente ao adicionar o botão à tela.
     """
-    def __init__(self, x=0, y=0, largura=0, altura=0, cor_fundo=Cores.verde(), cor_hover=Cores.verde(), cor_texto=Cores.preto(), texto="botao", raio_borda=5, funcao: Callable|None = None, imagem=None, fonte="arial", tamanho_fonte=36):
+    def __init__(self, x=0, y=0, largura=0, altura=0, cor_fundo=Cores.verde(), cor_hover=Cores.verde(), cor_texto=Cores.preto(), texto="botao", raio_borda=5, funcao: Callable|None = None,som = "clique", volume = None, imagem=None, fonte="arial", tamanho_fonte=36):
         self.rect = pygame.Rect(x, y, largura, altura)
+        self.som = None
+        if som:
+            self.som = som
+        self.volume = 0.5 if volume is None else volume
         self.imagem = None
         if imagem:
             from utilitarios.imagens import carregar_imagem
@@ -562,6 +607,9 @@ class Botao:
         """
         if evento.type == pygame.MOUSEBUTTONDOWN and evento.button == 1:
             if self.rect.collidepoint(evento.pos):
+                if self.som:
+                    from utilitarios.musicas import Musicas
+                    Musicas.tocar_efeito(self.som, self.volume)
                 self.clicado = True
                 print(f"Botão '{self.texto}' clicado!")
                 if self.funcao:
@@ -616,13 +664,13 @@ class CaixaTexto:
     Você NÃO precisa chamar desenhar ou processar_evento manualmente.
     O sistema faz isso automaticamente ao adicionar a caixa à tela.
     """
-    def __init__(self, x=0, y=0, largura=0, altura=0, cor_fundo=Cores.preto(), cor_borda=Cores.preto(), cor_texto=Cores.preto(), fonte="arial", placeholder="", raio_borda=5, tamanho_fonte=36):
+    def __init__(self, x=0, y=0, largura=0, altura=0, cor_fundo=Cores.preto(), cor_borda=Cores.preto(), cor_texto=Cores.preto(), fonte="arial", placeholder="", raio_borda=5, tamanho_fonte=36, texto=""):
         self.rect = pygame.Rect(x, y, largura, altura)
         self.cor_fundo = cor_fundo
         self.cor_borda = cor_borda
         self.cor_texto = cor_texto
         self.placeholder = placeholder
-        self.texto = ""
+        self.texto = texto
         self.ativo = False
         self.fonte = pygame.font.SysFont(fonte, tamanho_fonte)
         self.raio_borda = raio_borda
@@ -687,7 +735,7 @@ class TextoFormatado:
     Você NÃO precisa chamar desenhar manualmente.
     O sistema faz isso automaticamente ao adicionar o texto à tela.
     """
-    def __init__(self, x=0, y=0, texto="", cor_texto=Cores.preto(), tamanho=36, fonte_nome='arial', centralizado=False):
+    def __init__(self, x=0, y=0, texto="TEXTO FORMATADO", cor_texto=Cores.preto(), tamanho=36, fonte_nome='arial', centralizado=False):
         self.x = x
         self.y = y
         self.texto = texto
@@ -780,6 +828,7 @@ class ScrollArea:
                 for componente in self.componentes:
                     if hasattr(componente, 'processar_evento'):
                         componente.processar_evento(novo_evento)
+                
 
     def desenhar(self, tela):
         """

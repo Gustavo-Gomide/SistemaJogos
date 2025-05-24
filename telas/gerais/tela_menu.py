@@ -1,3 +1,4 @@
+from utilitarios.musicas import Efeitos
 from utilitarios.Aprincipal_widgets import Tela, Botao, Cores, TextoFormatado, Fontes, ScrollArea
 import os
 
@@ -25,6 +26,7 @@ class TelaMenu(Tela):
     """
 
     def __init__(self, navegador):
+        # Não precisa tocar música aqui, pois será restaurada ao voltar
         super().__init__(
             largura=900,
             altura=700,
@@ -32,8 +34,11 @@ class TelaMenu(Tela):
             cor_fundo=Cores.preto(),
             imagem_fundo='imagem',  # Use uma imagem de fundo pixelada se quiser
             navegador=navegador,
-            logo='mulher_cod'
+            logo='mulher_cod',
+            som_fundo=None,  # Removido para não tocar música automaticamente
+            efeito_saida=Efeitos.sair()
         )
+
 
         nome_exibicao = navegador.apelido_logado if navegador.apelido_logado else "visitante"
 
@@ -63,7 +68,8 @@ class TelaMenu(Tela):
                 "cor_texto": Cores.branco(),
                 "fonte": Fontes.consolas(),
                 "tamanho_fonte": 20,
-                "funcao": lambda: self.navegador.ir_para("musicas")
+                "funcao": lambda: self.navegador.ir_para("musicas"),
+                "som": Efeitos.clique()
             },
             {
                 "texto": "⚙️ Configurações",
@@ -73,7 +79,8 @@ class TelaMenu(Tela):
                 "cor_texto": Cores.preto(),
                 "fonte": Fontes.consolas(),
                 "tamanho_fonte": 20,
-                "funcao": lambda: self.navegador.ir_para("configurações")
+                "funcao": lambda: self.navegador.ir_para("configurações"),
+                "som": Efeitos.clique()
             },
             {
                 "texto": "👤 Cadastro/Login",
@@ -83,17 +90,30 @@ class TelaMenu(Tela):
                 "cor_texto": Cores.preto(),
                 "fonte": Fontes.consolas(),
                 "tamanho_fonte": 20,
-                "funcao": lambda: self.navegador.ir_para("cadastro")
+                "funcao": lambda: self.navegador.ir_para("cadastro"),
+                "som": Efeitos.clique()
+            },
+            {
+                "texto": "🏆 Ranking Global",
+                "x": 40, "y": 380, "largura": 200, "altura": 60,
+                "cor": Cores.amarelo_ouro(),
+                "cor_hover": Cores.ocre(),
+                "cor_texto": Cores.preto(),
+                "fonte": Fontes.consolas(),
+                "tamanho_fonte": 20,
+                "funcao": lambda: self.navegador.ir_para("ranking global"),
+                "som": Efeitos.clique()
             },
             {
                 "texto": "⏻ Sair",
-                "x": 40, "y": 380, "largura": 200, "altura": 60,
+                "x": 40, "y": 460, "largura": 200, "altura": 60,
                 "cor": Cores.vermelho_vinho(),
                 "cor_hover": Cores.vermelho_escuro(),
                 "cor_texto": Cores.branco(),
                 "fonte": Fontes.consolas(),
                 "tamanho_fonte": 20,
-                "funcao": self.sair
+                "funcao": self.sair,
+                "som": Efeitos.clique()
             }
         ]
 
@@ -107,7 +127,9 @@ class TelaMenu(Tela):
                 tamanho_fonte=btn["tamanho_fonte"],
                 funcao=btn["funcao"],
                 fonte=btn["fonte"],
-                raio_borda=14
+                raio_borda=14,
+                som=Efeitos.clique(),
+                volume=self.navegador.volume_efeito
             )
             self.adicionar_componente(botao)
 
@@ -122,6 +144,11 @@ class TelaMenu(Tela):
         # Exemplo de jogos disponíveis (substitua pelos seus jogos reais)
         jogos_disponiveis = [
             {"nome": "Pong Vintage", "acao": lambda: self.navegador.ir_para("menu pong-pong")},
+            {"nome": "Jogo da Velha Vintage", "acao": lambda: self.navegador.ir_para("menu jogo-da-velha")},
+            {"nome": "Dino", "acao": lambda: self.navegador.ir_para("menu dino")},
+            {"nome": "Tetris", "acao": lambda: self.navegador.ir_para("menu tetris")},
+            {"nome": "Flappy Bird", "acao": lambda: self.navegador.ir_para("menu flappy")},
+            {"nome": "Snake", "acao": lambda: self.navegador.ir_para("menu snake")},
             # Adicione mais jogos conforme necessário
         ]
 
@@ -149,7 +176,7 @@ class TelaMenu(Tela):
 
         self.adicionar_componente(
             TextoFormatado(
-                x=862, y=37, texto=nome_exibicao,
+                x=802, y=37, texto=nome_exibicao,
                 tamanho=18, cor_texto=Cores.cinza_escuro(),
                 fonte_nome=Fontes.consolas(), centralizado=True
             )

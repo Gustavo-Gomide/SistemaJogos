@@ -73,6 +73,17 @@ class TelaRankPongPong(Tela):
                 "porcentagem": stats["porcentagem_vitorias"]
             })
 
+        # Só mostra quem já jogou pelo menos uma partida
+        ranking = [j for j in ranking if (j["vitorias"] + j["derrotas"]) > 0]
+
+        if not ranking:
+            self.scroll_area.componentes = []
+            self.scroll_area.adicionar_componente(TextoFormatado(
+                x=20, y=40, texto="Nenhuma partida registrada ainda.",
+                tamanho=32, cor_texto=Cores.cinza(), fonte_nome=Fontes.consolas()
+            ))
+            return
+
         ranking.sort(key=lambda x: (-x["vitorias"], -x["porcentagem"], x["apelido"]))
 
         self.scroll_area.componentes = []

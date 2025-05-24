@@ -39,6 +39,7 @@ class Navegador:
         self.volume_fundo = 0.5    # Volume global para fundos/músicas (0.0 a 1.0)
         self.jgd_2 = None  # Jogador 2 (usado em jogos multiplayer)
         self.jgd_2_id = None  # ID do jogador 2 (usado em jogos multiplayer)
+        self.musica_fundo = None
 
     def registrar_tela(self, nome, funcao_construtora):
         """

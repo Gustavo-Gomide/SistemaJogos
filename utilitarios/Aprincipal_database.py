@@ -1,4 +1,3 @@
-from tracemalloc import Statistic
 import mysql.connector as mysql
 
 class BancoDados:
@@ -7,21 +6,24 @@ class BancoDados:
     Inclui métodos para criar banco, criar tabela, inserir, consultar, atualizar e deletar dados.
     """
 
-    # Configurações de conexão (ajuste conforme necessário)
-    @staticmethod
-    def config(host='localhost', user='root', password='', database='jogos'):
+    CONFIG = {
+        'host': 'localhost',
+        'user': 'root',
+        'password': '',
+        'database': 'jogos'
+    }
+
+    @classmethod
+    def configurar_conexao(cls, host='localhost', user='root', password='', database='jogos'):
         """
-        Configurações de conexão com o banco de dados.
-        :return: Dicionário com as configurações.
+        Define as configurações globais de conexão para o banco de dados.
         """
-        return {
+        cls.CONFIG = {
             'host': host,
             'user': user,
             'password': password,
             'database': database
         }
-    
-    CONFIG = config()
 
     @classmethod
     def criar_database(cls):
@@ -119,7 +121,7 @@ class BancoDados:
             cls.fechar_conexao_curso(conexao, cursor)
 
     @classmethod
-    def consultar_dados(cls, nome_tabela, condicao=None):
+    def consultar_dados(cls, nome_tabela, condicao=None, colunas="*"):
         """
         Consulta dados de uma tabela.
         :param nome_tabela: Nome da tabela.
@@ -132,9 +134,13 @@ class BancoDados:
 
         cursor = conexao.cursor()
         try:
-            consulta = f"SELECT * FROM {nome_tabela}"
+            if colunas == "*":
+                itens = "*"
+            else:
+                itens = ", ".join(colunas) if isinstance(colunas, list) else colunas
+            consulta = f"SELECT {itens} FROM {nome_tabela}"
             if condicao:
-                consulta += f" WHERE {condicao}"
+                consulta += f" {condicao}"
             cursor.execute(consulta)
             resultados = cursor.fetchall()
 
@@ -191,6 +197,71 @@ class BancoDados:
             print("✅ Dados deletados com sucesso.")
         except mysql.Error as erro:
             print(f"❌ Erro ao deletar dados: {erro}")
+        finally:
+            cls.fechar_conexao_curso(conexao, cursor)
+
+    @classmethod
+    def query_personalizada(cls, nome_tabela, query_extra=None):
+        """
+        Executa uma consulta personalizada na tabela.
+        :param nome_tabela: Nome da tabela.
+        :param query_extra: String extra para a query (ex: "WHERE ... ORDER BY ... LIMIT ...").
+        :return: Lista de resultados ou None.
+        """
+        conexao = cls.conectar()
+        if not conexao:
+            return
+
+        cursor = conexao.cursor()
+        try:
+            consulta = f"SELECT * FROM {nome_tabela}"
+            if query_extra:
+                consulta += f" {query_extra}"
+            cursor.execute(consulta)
+            resultados = cursor.fetchall()
+
+            if not resultados:
+                print("ℹ️ Nenhum dado encontrado.")
+            else:
+                return resultados
+        except Exception as erro:
+            print(f"❌ Erro na query personalizada: {erro}")
+        finally:
+            cls.fechar_conexao_curso(conexao, cursor)
+        
+    @classmethod
+    def numero_linhas(cls, nome_tabela):
+        """
+        Retorna o número de linhas de uma tabela.
+        :param nome_tabela: Nome da tabela.
+        :return: Número de linhas ou None.
+        """
+        conexao = cls.conectar()
+        if not conexao:
+            return
+
+        cursor = conexao.cursor()
+        try:
+            cursor.execute(f"SELECT COUNT(*) FROM {nome_tabela}")
+            resultado = cursor.fetchone()
+            return resultado[0] if resultado else None
+        except mysql.Error as erro:
+            print(f"❌ Erro ao contar linhas: {erro}")
+        finally:
+            cls.fechar_conexao_curso(conexao, cursor)
+
+    @classmethod
+    def executar_sql(cls, sql):
+        conexao = cls.conectar()
+        if not conexao:
+            return
+        cursor = conexao.cursor()
+        try:
+            cursor.execute(sql)
+            conexao.commit()
+            print("✅ SQL executado com sucesso.")
+        except Exception as erro:
+            print(f"❌ Erro ao executar SQL: {erro}")
         finally:
             cls.fechar_conexao_curso(conexao, cursor)
 

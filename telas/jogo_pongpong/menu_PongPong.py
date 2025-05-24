@@ -1,4 +1,6 @@
 from utilitarios.Aprincipal_widgets import Tela, Botao, Cores, TextoFormatado, Fontes
+from utilitarios.musicas import Musicas
+from databases.musica_anterior import MusicaAnterior
 
 class TelaMenuPongPong(Tela):
     """
@@ -12,6 +14,14 @@ class TelaMenuPongPong(Tela):
             cor_fundo=Cores.preto(), navegador=navegador
         )
         self.navegador = navegador
+
+        # Salva a música anterior (do menu principal)
+        Musicas.salvar_musica_anterior()
+
+
+        # Toca a música do PongPong só se não estiver tocando
+        if Musicas.musica_atual() != "jogo":
+            Musicas.tocar_fundo("jogo", self.navegador.volume_fundo)
 
         # Título centralizado com sombra
         self.adicionar_componente(
@@ -79,7 +89,7 @@ class TelaMenuPongPong(Tela):
                 x=20, y=20, largura=120, altura=38, texto="Voltar",
                 cor_fundo=Cores.cinza(), cor_hover=Cores.cinza_escuro(),
                 cor_texto=Cores.branco(),
-                funcao=lambda: self.navegador.ir_para("menu") if self.navegador else self.sair,
+                funcao= self.voltar_para_menu,
                 fonte=Fontes.consolas(), tamanho_fonte=20, raio_borda=10
             )
         )

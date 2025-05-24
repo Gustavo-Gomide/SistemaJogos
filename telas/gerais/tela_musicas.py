@@ -1,6 +1,9 @@
 from utilitarios.Aprincipal_widgets import Tela, Botao, Cores, TextoFormatado, ScrollArea, Fontes
 from utilitarios.musicas import fundos, efeitos, Musicas
 from utilitarios.imagens import Imagem
+from utilitarios.musicas import Musicas
+from databases.musica_anterior import MusicaAnterior
+
 
 class TelaMusicas(Tela):
     """
@@ -23,7 +26,7 @@ class TelaMusicas(Tela):
         super().__init__(
             largura=900, altura=650, titulo="Testar Músicas",
             cor_fundo=Cores.preto(), navegador=navegador,
-            imagem_fundo='love'
+            imagem_fundo='love', tela_selecao_musica=True
         )
 
         self.navegador = navegador
@@ -36,6 +39,10 @@ class TelaMusicas(Tela):
             cor_fundo=Cores.cinza_escuro(),
             cor_barra=Cores.menta()
         )
+
+        musica_atual = Musicas.musica_atual()  # Implemente esse método para saber qual está tocando
+        if musica_atual:
+            MusicaAnterior.set_musica_anterior(musica_atual)
 
         self.atualizar_componentes()
 
@@ -142,7 +149,8 @@ class TelaMusicas(Tela):
                 x=530, y=470, largura=100, altura=40, texto='Parar',
                 cor_fundo=Cores.vermelho(), cor_hover=Cores.vermelho_escuro(),
                 cor_texto=Cores.branco(),
-                funcao=lambda: Musicas.parar_fundo(), fonte=Fontes.consolas(), tamanho_fonte=20, raio_borda=10
+                funcao=lambda: (Musicas.parar_fundo(), MusicaAnterior.set_musica_anterior("parado")),
+                fonte=Fontes.consolas(), tamanho_fonte=20, raio_borda=10
             )
         )
 
@@ -150,6 +158,26 @@ class TelaMusicas(Tela):
         """Alterna entre as abas 'fundos' e 'efeitos'."""
         self.pagina = nome
         self.atualizar_componentes()
+
+    def voltar_para_menu(self):
+        musica_ant = MusicaAnterior.get_musica_anterior()
+        if musica_ant and musica_ant != "parado":
+            Musicas.tocar_fundo(musica_ant, volume=self.navegador.volume_fundo)
+        else:
+            Musicas.parar_fundo()
+        if self.navegador:
+            self.navegador.ir_para("menu")
+
+    # Botão para escolher música
+    def escolher_musica(self, nome):
+        Musicas.tocar_fundo(nome)
+        MusicaAnterior.set_musica_anterior(nome)
+
+    # Botão Parar
+    def parar_musica(self):
+        Musicas.parar_fundo()
+        MusicaAnterior.set_musica_anterior("parado")
+
 
 # Para rodar isolado:
 if __name__ == "__main__":
