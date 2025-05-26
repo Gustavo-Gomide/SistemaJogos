@@ -31,16 +31,23 @@ class TelaHistoricoFlappy(Tela):
     def carregar_historico(self):
         self.scroll_area.componentes = []
         historico = FlappyDB.historico() or []
+        
+        # Mostra todas as partidas, inclusive de visitantes
         for i, partida in enumerate(historico, start=1):
-            apelido = partida[1]
-            pontos = partida[2]
-            data = str(partida[3])[:19]
+            id_usuario = partida[1]
+            apelido = partida[2]
+            pontos = partida[3]
+            data = str(partida[4])[:19]  # Formata a data
+            
             self.scroll_area.adicionar_componente(TextoFormatado(
-                x=10, y=(i-1)*40, texto=f"{data}", tamanho=20, cor_texto=Cores.cinza(), fonte_nome=Fontes.consolas()
+                x=10, y=(i-1)*40, texto=f"{data}", tamanho=20,
+                cor_texto=Cores.cinza(), fonte_nome=Fontes.consolas()
             ))
             self.scroll_area.adicionar_componente(TextoFormatado(
-                x=120, y=(i-1)*40, texto=f"{apelido}", tamanho=20, cor_texto=Cores.verde(), fonte_nome=Fontes.consolas()
+                x=120, y=(i-1)*40, texto=f"{apelido}", tamanho=20,
+                cor_texto=Cores.verde(), fonte_nome=Fontes.consolas()
             ))
             self.scroll_area.adicionar_componente(TextoFormatado(
-                x=260, y=(i-1)*40, texto=f"{pontos}", tamanho=20, cor_texto=Cores.azul(), fonte_nome=Fontes.consolas()
+                x=260, y=(i-1)*40, texto=f"{pontos}", tamanho=20,
+                cor_texto=Cores.azul(), fonte_nome=Fontes.consolas()
             ))

@@ -31,16 +31,22 @@ class TelaHistoricoDino(Tela):
     def carregar_historico(self):
         self.scroll_area.componentes = []
         historico = DinoDB.historico() or []
+        # Show all games, including visitors
         for i, partida in enumerate(historico, start=1):
-            apelido = partida[1]
-            pontos = partida[2]
-            data = str(partida[3])[:19]
+            id_usuario = partida[1]
+            apelido = partida[2]
+            pontos = partida[3]
+            data = str(partida[4])[:19]
+            
             self.scroll_area.adicionar_componente(TextoFormatado(
-                x=10, y=(i-1)*40, texto=f"{data}", tamanho=20, cor_texto=Cores.cinza(), fonte_nome=Fontes.consolas()
+                x=10, y=(i-1)*40, texto=f"{data}", tamanho=20,
+                cor_texto=Cores.cinza(), fonte_nome=Fontes.consolas()
             ))
             self.scroll_area.adicionar_componente(TextoFormatado(
-                x=220, y=(i-1)*40, texto=f"{apelido}", tamanho=20, cor_texto=Cores.verde(), fonte_nome=Fontes.consolas()
+                x=220, y=(i-1)*40, texto=f"{apelido}", tamanho=20,
+                cor_texto=Cores.verde(), fonte_nome=Fontes.consolas()
             ))
             self.scroll_area.adicionar_componente(TextoFormatado(
-                x=400, y=(i-1)*40, texto=f"{pontos}", tamanho=20, cor_texto=Cores.azul(), fonte_nome=Fontes.consolas()
+                x=400, y=(i-1)*40, texto=f"{pontos}", tamanho=20,
+                cor_texto=Cores.azul(), fonte_nome=Fontes.consolas()
             ))

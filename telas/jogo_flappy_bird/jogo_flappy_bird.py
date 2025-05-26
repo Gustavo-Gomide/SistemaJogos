@@ -129,8 +129,20 @@ class TelaJogoFlappy(Tela):
     def game_over(self):
         Musicas.tocar_efeito(self.efeito_gameover, volume=0.8)
         apelido = getattr(self.navegador, "apelido_logado", None) or "Visitante"
-        FlappyDB.registrar_partida(apelido, int(self.pontuacao))
-        DadosUsuario.atualizar_pontuacao_jogo(apelido, "flappy_bird", int(self.pontuacao), tempo=120)
+        
+        # Get user id if logged in
+        id_usuario = None
+        if apelido != "Visitante":
+            usuarios = DadosUsuario.listar_usuarios()
+            for u in usuarios:
+                if u[3] == apelido:  # Assuming apelido is at index 3
+                    id_usuario = u[0]  # Assuming id is at index 0
+                    break
+        
+        # Register game with id_usuario
+        FlappyDB.registrar_partida(id_usuario, apelido, int(self.pontuacao))
+        DadosUsuario.atualizar_pontuacao_jogo(apelido, "flappy", int(self.pontuacao), tempo=120)
+        
         fonte = pygame.font.SysFont("consolas", 48)
         texto = fonte.render("Game Over!", True, (200, 0, 0))
         self.tela.blit(texto, (60, 250))

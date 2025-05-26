@@ -117,8 +117,20 @@ class TelaJogoDino(Tela):
 
     def game_over(self):
         apelido = getattr(self.navegador, "apelido_logado", None) or "Visitante"
-        DinoDB.registrar_partida(apelido, self.pontuacao)
+        
+        # Get user id if logged in
+        id_usuario = None
+        if apelido != "Visitante":
+            usuarios = DadosUsuario.listar_usuarios()
+            for u in usuarios:
+                if u[3] == apelido:  # Assuming apelido is at index 3
+                    id_usuario = u[0]  # Assuming id is at index 0
+                    break
+        
+        # Register game with id_usuario
+        DinoDB.registrar_partida(id_usuario, apelido, self.pontuacao)
         DadosUsuario.atualizar_pontuacao_jogo(apelido, "dino", self.pontuacao, tempo=120)
+        
         fonte = pygame.font.SysFont("consolas", 48)
         texto = fonte.render("Game Over!", True, (200, 0, 0))
         self.tela.blit(texto, (220, 120))

@@ -1,20 +1,24 @@
 from utilitarios.Aprincipal_database import BancoDados
 
 class SnakeDB(BancoDados):
-    colunas = {
-        "id": "INT AUTO_INCREMENT PRIMARY KEY",
-        "apelido": "VARCHAR(50) NOT NULL",
-        "pontuacao": "INT NOT NULL",
-        "data_partida": "DATETIME DEFAULT CURRENT_TIMESTAMP"
-    }
-
     @classmethod
     def criar_tabela(cls):
-        BancoDados.criar_tabela("snake_partidas", cls.colunas)
+        colunas = {
+            "id": "INT AUTO_INCREMENT PRIMARY KEY",
+            "id_usuario": "INT",
+            "apelido": "VARCHAR(50) NOT NULL",
+            "pontuacao": "INT NOT NULL",
+            "data_partida": "DATETIME DEFAULT CURRENT_TIMESTAMP"
+        }
+        foreign_keys = [
+            "FOREIGN KEY (id_usuario) REFERENCES usuarios(id) ON DELETE CASCADE ON UPDATE CASCADE"
+        ]
+        BancoDados.criar_tabela_avancada("snake_partidas", colunas, foreign_keys)
 
     @classmethod
-    def registrar_partida(cls, apelido, pontuacao):
+    def registrar_partida(cls, id_usuario, apelido, pontuacao):
         dados = {
+            "id_usuario": id_usuario,
             "apelido": apelido,
             "pontuacao": pontuacao
         }
@@ -22,7 +26,8 @@ class SnakeDB(BancoDados):
 
     @classmethod
     def ranking(cls):
-        return BancoDados.consultar_dados("snake_partidas", "ORDER BY pontuacao DESC LIMIT 10")
+        """Retorna todas as partidas ordenadas por pontuação."""
+        return BancoDados.consultar_dados("snake_partidas", "ORDER BY pontuacao DESC")
 
     @classmethod
     def historico(cls):

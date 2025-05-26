@@ -1,21 +1,32 @@
 from utilitarios.Aprincipal_database import BancoDados
 
 class TetrisDB(BancoDados):
-    colunas = {
-        "id": "INT AUTO_INCREMENT PRIMARY KEY",
-        "apelido": "VARCHAR(50) NOT NULL",
-        "pontuacao": "INT NOT NULL",
-        "linhas": "INT NOT NULL",
-        "data_partida": "DATETIME DEFAULT CURRENT_TIMESTAMP"
-    }
-
     @classmethod
     def criar_tabela(cls):
-        BancoDados.criar_tabela("tetris_partidas", cls.colunas)
+        colunas = {
+            "id": "INT AUTO_INCREMENT PRIMARY KEY",
+            "id_usuario": "INT",
+            "apelido": "VARCHAR(50) NOT NULL",
+            "pontuacao": "INT NOT NULL",
+            "linhas": "INT NOT NULL",
+            "data_partida": "DATETIME DEFAULT CURRENT_TIMESTAMP"
+        }
+        foreign_keys = [
+            "FOREIGN KEY (id_usuario) REFERENCES usuarios(id) ON DELETE CASCADE ON UPDATE CASCADE"
+        ]
+        BancoDados.criar_tabela_avancada("tetris_partidas", colunas, foreign_keys)
 
     @classmethod
-    def registrar_partida(cls, apelido, pontuacao, linhas):
+    def registrar_partida(cls, id_usuario, apelido, pontuacao, linhas):
+        """
+        Registra uma partida do Tetris.
+        :param id_usuario: ID do usuário (None se for visitante)
+        :param apelido: Apelido do jogador
+        :param pontuacao: Pontuação obtida
+        :param linhas: Número de linhas completadas
+        """
         dados = {
+            "id_usuario": id_usuario,
             "apelido": apelido,
             "pontuacao": pontuacao,
             "linhas": linhas

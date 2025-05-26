@@ -171,14 +171,25 @@ class TelaJogoTetris(Tela):
         pygame.display.flip()
 
     def game_over(self):
-        from utilitarios.musicas import Musicas
         Musicas.tocar_efeito(self.efeito_gameover, volume=0.8)
         apelido = getattr(self.navegador, "apelido_logado", None) or "Visitante"
-        TetrisDB.registrar_partida(apelido, self.pontuacao, self.linhas)
+        
+        # Get user id if logged in
+        id_usuario = None
+        if apelido != "Visitante":
+            usuarios = DadosUsuario.listar_usuarios()
+            for u in usuarios:
+                if u[3] == apelido:  # Assuming apelido is at index 3
+                    id_usuario = u[0]  # Assuming id is at index 0
+                    break
+        
+        # Register game with id_usuario
+        TetrisDB.registrar_partida(id_usuario, apelido, self.pontuacao, self.linhas)
         DadosUsuario.atualizar_pontuacao_jogo(apelido, "tetris", self.pontuacao, tempo=120)
+        
         fonte = pygame.font.SysFont("consolas", 48)
         texto = fonte.render("Game Over!", True, (200, 0, 0))
-        self.tela.blit(texto, (60, 200))
+        self.tela.blit(texto, (60, 250))
         pygame.display.flip()
         pygame.time.wait(1800)
         self.voltar_menu()

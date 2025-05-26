@@ -2,23 +2,32 @@ from utilitarios.Aprincipal_database import BancoDados
 import json
 
 class BancoDadosVelha(BancoDados):
-    # Não precisa mais de __init__ nem de self.config/self.conexao
-
     @staticmethod
     def criar_tabela():
         colunas = {
             "id": "INT AUTO_INCREMENT PRIMARY KEY",
+            "id_usuario_x": "INT NULL",
             "jogador_x": "VARCHAR(50) NOT NULL",
+            "id_usuario_o": "INT NULL",
             "jogador_o": "VARCHAR(50) NOT NULL",
             "vencedor": "VARCHAR(50) NOT NULL",
             "data": "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
         }
-        BancoDados.criar_tabela("tb_resultados", colunas)
+        foreign_keys = [
+            "FOREIGN KEY (id_usuario_x) REFERENCES usuarios(id) ON DELETE CASCADE ON UPDATE CASCADE",
+            "FOREIGN KEY (id_usuario_o) REFERENCES usuarios(id) ON DELETE CASCADE ON UPDATE CASCADE"
+        ]
+        BancoDados.criar_tabela_avancada("tb_resultados", colunas, foreign_keys)
 
     @staticmethod
-    def salvar_resultado(jogador_x, jogador_o, vencedor):
+    def salvar_resultado(jogador_x, jogador_o, vencedor, id_usuario_x=None, id_usuario_o=None):
+        """
+        Salva o resultado da partida. id_usuario_x e id_usuario_o podem ser None (visitante).
+        """
         dados = {
+            "id_usuario_x": id_usuario_x,
             "jogador_x": jogador_x,
+            "id_usuario_o": id_usuario_o,
             "jogador_o": jogador_o,
             "vencedor": vencedor
         }
@@ -77,4 +86,4 @@ class BancoDadosVelha(BancoDados):
             print(f"Erro ao apagar histórico: {e}")
             return False
 
-        
+

@@ -6,13 +6,6 @@ class BancoDados:
     Inclui métodos para criar banco, criar tabela, inserir, consultar, atualizar e deletar dados.
     """
 
-    CONFIG = {
-        'host': 'localhost',
-        'user': 'root',
-        'password': '',
-        'database': 'jogos'
-    }
-
     @classmethod
     def configurar_conexao(cls, host='localhost', user='root', password='', database='jogos'):
         """
@@ -75,7 +68,7 @@ class BancoDados:
     @classmethod
     def criar_tabela(cls, nome_tabela, colunas: dict):
         """
-        Cria uma tabela no banco de dados 'jogos'.
+        Cria uma tabela simples (sem foreign keys).
         :param nome_tabela: Nome da tabela a ser criada.
         :param colunas: Dicionário com os nomes e tipos das colunas.
         """
@@ -89,6 +82,36 @@ class BancoDados:
             cursor.execute(f"CREATE TABLE IF NOT EXISTS {nome_tabela} ({colunas_str})")
             conexao.commit()
             print(f"✅ Tabela '{nome_tabela}' criada ou já existente.")
+        except mysql.Error as erro:
+            print(f"❌ Erro ao criar a tabela '{nome_tabela}': {erro}")
+        finally:
+            cls.fechar_conexao_curso(conexao, cursor)
+
+    @classmethod
+    def criar_tabela_avancada(cls, nome_tabela, colunas: dict, foreign_keys: list = None):
+        """
+        Cria uma tabela com suporte a foreign keys e CASCADE.
+        :param nome_tabela: Nome da tabela.
+        :param colunas: Dicionário {nome_coluna: tipo_coluna}.
+        :param foreign_keys: Lista de strings com constraints de foreign key.
+            Exemplo: [
+                "FOREIGN KEY (id_usuario) REFERENCES usuarios(id) ON DELETE CASCADE ON UPDATE CASCADE",
+                "FOREIGN KEY (id_usuario_j2) REFERENCES usuarios(id) ON DELETE CASCADE ON UPDATE CASCADE"
+            ]
+        """
+        conexao = cls.conectar()
+        if not conexao:
+            return
+
+        cursor = conexao.cursor()
+        colunas_str = ", ".join([f"{col} {tipo}" for col, tipo in colunas.items()])
+        fk_str = ""
+        if foreign_keys:
+            fk_str = ", " + ", ".join(foreign_keys)
+        try:
+            cursor.execute(f"CREATE TABLE IF NOT EXISTS {nome_tabela} ({colunas_str}{fk_str})")
+            conexao.commit()
+            print(f"✅ Tabela '{nome_tabela}' criada ou já existente (com foreign keys).")
         except mysql.Error as erro:
             print(f"❌ Erro ao criar a tabela '{nome_tabela}': {erro}")
         finally:

@@ -10,20 +10,25 @@ class PongPongDB:
         "id_usuario_j1": "INT",
         "apelido_j1": "VARCHAR(50) NOT NULL",
         "id_usuario_j2": "INT NULL",
-        "apelido_j2": "VARCHAR(50) NULL",
+        "apelido_j2": "VARCHAR(50)",
         "pontuacao_j1": "INT NOT NULL",
-        "pontuacao_j2": "INT NULL",
+        "pontuacao_j2": "INT",
         "vencedor": "VARCHAR(50) NOT NULL",
         "tempo_jogado": "INT NOT NULL",
-        "data_partida": "DATETIME DEFAULT CURRENT_TIMESTAMP",
-        "FOREIGN KEY (id_usuario_j1)": "REFERENCES usuarios(id)",
-        "FOREIGN KEY (id_usuario_j2)": "REFERENCES usuarios(id)"
+        "data_partida": "DATETIME DEFAULT CURRENT_TIMESTAMP"
     }
 
     @classmethod
     def criar_tabela_pong(cls):
         """Cria a tabela de partidas do PongPong."""
-        BancoDados.criar_tabela("pong_partidas", cls.colunas_pong)
+        BancoDados.criar_tabela_avancada(
+            "pong_partidas",
+            cls.colunas_pong,
+            [
+                "FOREIGN KEY (id_usuario_j1) REFERENCES usuarios(id) ON DELETE CASCADE ON UPDATE CASCADE",
+                "FOREIGN KEY (id_usuario_j2) REFERENCES usuarios(id) ON DELETE CASCADE ON UPDATE CASCADE"
+            ]
+        )
 
     @classmethod
     def registrar_partida(cls, id_usuario_j1, apelido_j1, id_usuario_j2=None, apelido_j2=None, pontuacao_j1=0, pontuacao_j2=None, vencedor="", tempo_jogado=0):

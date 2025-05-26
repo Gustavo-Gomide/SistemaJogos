@@ -49,6 +49,27 @@ class TelaLoginCadastro(Tela):
             fonte_nome=Fontes.consolas(), centralizado=True
         ))
 
+        if self.navegador.apelido_logado:
+            self.adicionar_componente(
+                Botao(
+                    x=680, y=60, largura=180, altura=45, texto='Deslogar',
+                    cor_fundo=Cores.azul(), cor_hover=Cores.azul_escuro(),
+                    cor_texto=Cores.branco(),
+                    funcao=self.Deslogar,
+                    fonte=Fontes.consolas(), tamanho_fonte=22, raio_borda=12
+                )
+            )
+
+            self.adicionar_componente(
+                Botao(
+                    x=680, y=110, largura=180, altura=45, texto='Excluir Conta',
+                    cor_fundo=Cores.azul(), cor_hover=Cores.azul_escuro(),
+                    cor_texto=Cores.branco(),
+                    funcao=lambda: (DadosUsuario.deletar_usuario(self.navegador.apelido_logado), self.Deslogar()),
+                    fonte=Fontes.consolas(), tamanho_fonte=22, raio_borda=12
+                )
+            )
+
         # Mensagem de feedback centralizada
         self.mensagem_texto = TextoFormatado(
             x=450, y=600, texto='', tamanho=24, cor_texto=Cores.amarelo_ouro(), fonte_nome=Fontes.consolas(), centralizado=True
@@ -163,16 +184,19 @@ class TelaLoginCadastro(Tela):
         senha = self.senha_login.texto
         if apelido and senha:
             usuarios = DadosUsuario.listar_usuarios()
-            usuario = next((u for u in usuarios if u[3] == apelido), None)
-            if usuario:
-                senha_correta = usuario[4]
-                if senha == senha_correta:
-                    self.navegador.apelido_logado = apelido
-                    self.navegador.id_logado = usuario[0]  # id global único
-                    self.mensagem['texto'] = f"Bem-vindo, {apelido}!"
-                    self.navegador.ir_para("menu")
+            if usuarios:
+                usuario = next((u for u in usuarios if u[3] == apelido), None)
+                if usuario:
+                    senha_correta = usuario[4]
+                    if senha == senha_correta:
+                        self.navegador.apelido_logado = apelido
+                        self.navegador.id_logado = usuario[0]  # id global único
+                        self.mensagem['texto'] = f"Bem-vindo, {apelido}!"
+                        self.navegador.ir_para("menu")
+                    else:
+                        self.mensagem['texto'] = "Senha incorreta!"
                 else:
-                    self.mensagem['texto'] = "Senha incorreta!"
+                    self.mensagem['texto'] = "Usuário não encontrado!"
             else:
                 self.mensagem['texto'] = "Usuário não encontrado!"
         else:
@@ -195,6 +219,14 @@ class TelaLoginCadastro(Tela):
         except Exception as e:
             self.mensagem['texto'] = f"Erro: {e}"
         self.mensagem_texto.atualizar_texto(self.mensagem['texto'])
+    
+    def Deslogar(self):
+        """Desloga o usuário atual, limpando os dados de login."""
+        self.navegador.apelido_logado = None
+        self.navegador.id_logado = None
+        self.mensagem['texto'] = "Usuário deslogado com sucesso!"
+        self.mensagem_texto.atualizar_texto(self.mensagem['texto'])
+        self.navegador.ir_para("menu")
 
     # Não há necessidade de sobrescrever o método rodar(), pois já está implementado na classe Tela.
     # O Navegador irá instanciar e rodar esta tela automaticamente quando necessário.

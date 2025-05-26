@@ -31,15 +31,31 @@ class TelaRankFlappy(Tela):
     def carregar_ranking(self):
         self.scroll_area.componentes = []
         ranking = FlappyDB.ranking() or []
-        for i, partida in enumerate(ranking, start=1):
-            apelido = partida[1]
-            pontos = partida[2]
+        
+        # Pega a maior pontuação de cada usuário cadastrado
+        melhores = {}
+        for partida in ranking:
+            id_usuario = partida[1]
+            apelido = partida[2]
+            pontos = partida[3]
+            
+            if id_usuario is not None:  # Só considera usuários cadastrados
+                if id_usuario not in melhores or pontos > melhores[id_usuario][1]:
+                    melhores[id_usuario] = (apelido, pontos)
+        
+        # Ordena por pontuação decrescente
+        ranking_ordenado = sorted(melhores.values(), key=lambda x: x[1], reverse=True)
+        
+        for i, (apelido, pontos) in enumerate(ranking_ordenado, start=1):
             self.scroll_area.adicionar_componente(TextoFormatado(
-                x=10, y=(i-1)*40, texto=f"{i:02d}", tamanho=24, cor_texto=Cores.amarelo_ouro(), fonte_nome=Fontes.consolas()
+                x=10, y=(i-1)*40, texto=f"{i:02d}", tamanho=24, 
+                cor_texto=Cores.amarelo_ouro(), fonte_nome=Fontes.consolas()
             ))
             self.scroll_area.adicionar_componente(TextoFormatado(
-                x=70, y=(i-1)*40, texto=f"{apelido}", tamanho=24, cor_texto=Cores.verde(), fonte_nome=Fontes.consolas()
+                x=70, y=(i-1)*40, texto=f"{apelido}", tamanho=24,
+                cor_texto=Cores.verde(), fonte_nome=Fontes.consolas()
             ))
             self.scroll_area.adicionar_componente(TextoFormatado(
-                x=220, y=(i-1)*40, texto=f"{pontos}", tamanho=24, cor_texto=Cores.azul(), fonte_nome=Fontes.consolas()
+                x=220, y=(i-1)*40, texto=f"{pontos}", tamanho=24,
+                cor_texto=Cores.azul(), fonte_nome=Fontes.consolas()
             ))
