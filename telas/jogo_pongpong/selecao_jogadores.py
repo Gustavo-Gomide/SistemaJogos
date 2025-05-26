@@ -20,39 +20,39 @@ class TelaSelecaoJogadores(Tela):
         self.j2_ok = False
 
         # Campos Jogador 1
-        self.apelido1 = CaixaTexto(x=60, y=180, largura=220, altura=40, placeholder="Apelido", cor_fundo=Cores.cinza_claro(), cor_texto=Cores.preto())
-        self.senha1 = CaixaTexto(x=60, y=230, largura=220, altura=40, placeholder="Senha", cor_fundo=Cores.cinza_claro(), cor_texto=Cores.preto())
-        self.msg1 = TextoFormatado(x=170, y=280, texto="", tamanho=18, cor_texto=Cores.vermelho(), fonte_nome=Fontes.consolas(), centralizado=True)
+        self.apelido1 = CaixaTexto(x=60, y=180, largura=220, altura=50, tamanho_fonte=30, placeholder="Apelido", cor_fundo=Cores.cinza_claro(), cor_texto=Cores.preto())
+        self.senha1 = CaixaTexto(x=60, y=230, largura=220, altura=50, tamanho_fonte=30, placeholder="Senha", cor_fundo=Cores.cinza_claro(), cor_texto=Cores.preto())
+        self.msg1 = TextoFormatado(x=170, y=280, texto="", tamanho=18, cor_texto=Cores.vermelho(), fonte_nome=Fontes.segoe_ui_emoji(), centralizado=True)
 
         # Campos Jogador 2
-        self.apelido2 = CaixaTexto(x=420, y=180, largura=220, altura=40, placeholder="Apelido", cor_fundo=Cores.cinza_claro(), cor_texto=Cores.preto())
-        self.senha2 = CaixaTexto(x=420, y=230, largura=220, altura=40, placeholder="Senha", cor_fundo=Cores.cinza_claro(), cor_texto=Cores.preto())
-        self.msg2 = TextoFormatado(x=530, y=280, texto="", tamanho=18, cor_texto=Cores.vermelho(), fonte_nome=Fontes.consolas(), centralizado=True)
+        self.apelido2 = CaixaTexto(x=420, y=180, largura=220, altura=50, tamanho_fonte=30, placeholder="Apelido", cor_fundo=Cores.cinza_claro(), cor_texto=Cores.preto())
+        self.senha2 = CaixaTexto(x=420, y=230, largura=220, altura=50, tamanho_fonte=30, placeholder="Senha", cor_fundo=Cores.cinza_claro(), cor_texto=Cores.preto())
+        self.msg2 = TextoFormatado(x=530, y=280, texto="", tamanho=18, cor_texto=Cores.vermelho(), fonte_nome=Fontes.segoe_ui_emoji(), centralizado=True)
 
         # Botões de aba para cada jogador
         self.btn_j1_login = Botao(
             x=60, y=130, largura=110, altura=36, texto="Login",
             cor_fundo=Cores.verde() if self.j1_login else Cores.cinza(),
             cor_hover=Cores.verde_escuro(), cor_texto=Cores.preto(),
-            funcao=self.j1_aba_login, fonte=Fontes.consolas(), tamanho_fonte=20, raio_borda=10
+            funcao=self.j1_aba_login, fonte=Fontes.segoe_ui_emoji(), tamanho_fonte=20, raio_borda=10
         )
         self.btn_j1_visit = Botao(
             x=170, y=130, largura=110, altura=36, texto="Visitante",
             cor_fundo=Cores.verde() if not self.j1_login else Cores.cinza(),
             cor_hover=Cores.verde_escuro(), cor_texto=Cores.preto(),
-            funcao=self.j1_aba_visit, fonte=Fontes.consolas(), tamanho_fonte=20, raio_borda=10
+            funcao=self.j1_aba_visit, fonte=Fontes.segoe_ui_emoji(), tamanho_fonte=20, raio_borda=10
         )
         self.btn_j2_login = Botao(
             x=420, y=130, largura=110, altura=36, texto="Login",
             cor_fundo=Cores.azul() if self.j2_login else Cores.cinza(),
             cor_hover=Cores.azul_escuro(), cor_texto=Cores.branco(),
-            funcao=self.j2_aba_login, fonte=Fontes.consolas(), tamanho_fonte=20, raio_borda=10
+            funcao=self.j2_aba_login, fonte=Fontes.segoe_ui_emoji(), tamanho_fonte=20, raio_borda=10
         )
         self.btn_j2_visit = Botao(
             x=530, y=130, largura=110, altura=36, texto="Visitante",
             cor_fundo=Cores.azul() if not self.j2_login else Cores.cinza(),
             cor_hover=Cores.azul_escuro(), cor_texto=Cores.branco(),
-            funcao=self.j2_aba_visit, fonte=Fontes.consolas(), tamanho_fonte=20, raio_borda=10
+            funcao=self.j2_aba_visit, fonte=Fontes.segoe_ui_emoji(), tamanho_fonte=20, raio_borda=10
         )
 
         self.atualizar_componentes()
@@ -65,7 +65,7 @@ class TelaSelecaoJogadores(Tela):
             x=260, y=20, largura=180, altura=38, texto="⏪ Voltar ao Menu",
             cor_fundo=Cores.azul(), cor_hover=Cores.azul_escuro(), cor_texto=Cores.branco(),
             funcao=lambda: self.navegador.ir_para("menu pong-pong"),
-            fonte=Fontes.consolas(), tamanho_fonte=20, raio_borda=12
+            fonte=Fontes.segoe_ui_emoji(), tamanho_fonte=20, raio_borda=12
         ))
 
         # --- JOGADOR 1 ---
@@ -73,17 +73,17 @@ class TelaSelecaoJogadores(Tela):
             # Pergunta: continuar como logado?
             self.adicionar_componente(TextoFormatado(
                 x=170, y=120, texto=f"Jogador 1: {self.navegador.apelido_logado}",
-                tamanho=24, cor_texto=Cores.verde(), fonte_nome=Fontes.consolas(), centralizado=True
+                tamanho=24, cor_texto=Cores.verde(), fonte_nome=Fontes.segoe_ui_emoji(), centralizado=True
             ))
             self.adicionar_componente(Botao(
                 x=60, y=180, largura=100, altura=40, texto="Sim",
                 cor_fundo=Cores.verde(), cor_hover=Cores.verde_escuro(), cor_texto=Cores.preto(),
-                funcao=lambda: self.set_j1_ok(), fonte=Fontes.consolas(), tamanho_fonte=20, raio_borda=10
+                funcao=lambda: self.set_j1_ok(), fonte=Fontes.segoe_ui_emoji(), tamanho_fonte=20, raio_borda=10
             ))
             self.adicionar_componente(Botao(
                 x=180, y=180, largura=100, altura=40, texto="Não",
                 cor_fundo=Cores.cinza(), cor_hover=Cores.cinza_escuro(), cor_texto=Cores.preto(),
-                funcao=lambda: self.trocar_j1(), fonte=Fontes.consolas(), tamanho_fonte=20, raio_borda=10
+                funcao=lambda: self.trocar_j1(), fonte=Fontes.segoe_ui_emoji(), tamanho_fonte=20, raio_borda=10
             ))
         elif not self.j1_ok:
             # Paginação login/visitante para J1
@@ -93,13 +93,13 @@ class TelaSelecaoJogadores(Tela):
                 self.adicionar_componente(Botao(
                     x=60, y=320, largura=220, altura=40, texto="Entrar",
                     cor_fundo=Cores.verde(), cor_hover=Cores.verde_escuro(), cor_texto=Cores.preto(),
-                    funcao=self.login_jogador1, fonte=Fontes.consolas(), tamanho_fonte=20, raio_borda=10
+                    funcao=self.login_jogador1, fonte=Fontes.segoe_ui_emoji(), tamanho_fonte=20, raio_borda=10
                 ))
             else:
                 self.adicionar_componente(Botao(
-                    x=60, y=200, largura=220, altura=40, texto="Continuar como Visitante",
+                    x=60, y=200, largura=230, altura=40, texto="Continuar como Visitante",
                     cor_fundo=Cores.cinza(), cor_hover=Cores.cinza_escuro(), cor_texto=Cores.preto(),
-                    funcao=self.visitante1, fonte=Fontes.consolas(), tamanho_fonte=20, raio_borda=10
+                    funcao=self.visitante1, fonte=Fontes.segoe_ui_emoji(), tamanho_fonte=20, raio_borda=10
                 ))
             # Abas
             self.adicionar_componente(self.btn_j1_login)
@@ -108,24 +108,24 @@ class TelaSelecaoJogadores(Tela):
         else:
             self.adicionar_componente(TextoFormatado(
                 x=170, y=200, texto=f"{self.navegador.apelido_logado or 'Visitante 1'}",
-                tamanho=26, cor_texto=Cores.verde(), fonte_nome=Fontes.consolas(), centralizado=True
+                tamanho=26, cor_texto=Cores.verde(), fonte_nome=Fontes.segoe_ui_emoji(), centralizado=True
             ))
 
         # --- JOGADOR 2 ---
         if self.navegador.jgd_2_id and not self.j2_ok and not getattr(self, "j2_trocando", False):
             self.adicionar_componente(TextoFormatado(
                 x=530, y=120, texto=f"Jogador 2: {self.navegador.jgd_2}",
-                tamanho=24, cor_texto=Cores.azul(), fonte_nome=Fontes.consolas(), centralizado=True
+                tamanho=24, cor_texto=Cores.azul(), fonte_nome=Fontes.segoe_ui_emoji(), centralizado=True
             ))
             self.adicionar_componente(Botao(
                 x=420, y=180, largura=100, altura=40, texto="Sim",
                 cor_fundo=Cores.azul(), cor_hover=Cores.azul_escuro(), cor_texto=Cores.branco(),
-                funcao=lambda: self.set_j2_ok(), fonte=Fontes.consolas(), tamanho_fonte=20, raio_borda=10
+                funcao=lambda: self.set_j2_ok(), fonte=Fontes.segoe_ui_emoji(), tamanho_fonte=20, raio_borda=10
             ))
             self.adicionar_componente(Botao(
                 x=540, y=180, largura=100, altura=40, texto="Não",
                 cor_fundo=Cores.cinza(), cor_hover=Cores.cinza_escuro(), cor_texto=Cores.preto(),
-                funcao=lambda: self.trocar_j2(), fonte=Fontes.consolas(), tamanho_fonte=20, raio_borda=10
+                funcao=lambda: self.trocar_j2(), fonte=Fontes.segoe_ui_emoji(), tamanho_fonte=20, raio_borda=10
             ))
         elif not self.j2_ok:
             # Paginação login/visitante para J2
@@ -135,13 +135,13 @@ class TelaSelecaoJogadores(Tela):
                 self.adicionar_componente(Botao(
                     x=420, y=320, largura=220, altura=40, texto="Entrar",
                     cor_fundo=Cores.azul(), cor_hover=Cores.azul_escuro(), cor_texto=Cores.branco(),
-                    funcao=self.login_jogador2, fonte=Fontes.consolas(), tamanho_fonte=20, raio_borda=10
+                    funcao=self.login_jogador2, fonte=Fontes.segoe_ui_emoji(), tamanho_fonte=20, raio_borda=10
                 ))
             else:
                 self.adicionar_componente(Botao(
-                    x=420, y=200, largura=220, altura=40, texto="Continuar como Visitante",
+                    x=420, y=200, largura=230, altura=40, texto="Continuar como Visitante",
                     cor_fundo=Cores.cinza(), cor_hover=Cores.cinza_escuro(), cor_texto=Cores.preto(),
-                    funcao=self.visitante2, fonte=Fontes.consolas(), tamanho_fonte=20, raio_borda=10
+                    funcao=self.visitante2, fonte=Fontes.segoe_ui_emoji(), tamanho_fonte=20, raio_borda=10
                 ))
             # Abas
             self.adicionar_componente(self.btn_j2_login)
@@ -150,7 +150,7 @@ class TelaSelecaoJogadores(Tela):
         else:
             self.adicionar_componente(TextoFormatado(
                 x=530, y=200, texto=f"{self.navegador.jgd_2 or 'Visitante 2'}",
-                tamanho=26, cor_texto=Cores.azul(), fonte_nome=Fontes.consolas(), centralizado=True
+                tamanho=26, cor_texto=Cores.azul(), fonte_nome=Fontes.segoe_ui_emoji(), centralizado=True
             ))
 
         # Botão iniciar só se ambos ok
@@ -158,7 +158,7 @@ class TelaSelecaoJogadores(Tela):
             x=250, y=420, largura=200, altura=50, texto="Iniciar Jogo",
             cor_fundo=Cores.amarelo_ouro() if self.j1_ok and self.j2_ok else Cores.cinza(),
             cor_hover=Cores.ocre(), cor_texto=Cores.preto(),
-            funcao=self.iniciar_jogo, fonte=Fontes.consolas(), tamanho_fonte=24, raio_borda=12
+            funcao=self.iniciar_jogo, fonte=Fontes.segoe_ui_emoji(), tamanho_fonte=24, raio_borda=12
         ))
 
     # Abas

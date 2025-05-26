@@ -184,8 +184,8 @@ class TelaJogoPongPong(Tela):
             return  # Sai do método para pausar imediatamente
 
         # Lógica de vitória (quem faz 5 pontos)
-        if self.score1 >= 5 or self.score2 >= 5:
-            vencedor = self.navegador.apelido_logado if self.score1 >= 5 else self.navegador.jgd_2
+        if self.score1 >= 2 or self.score2 >= 2:
+            vencedor = self.navegador.apelido_logado if self.score1 >= 2 else self.navegador.jgd_2
             self.mostrar_vencedor(vencedor)
 
     def mostrar_vencedor(self, vencedor):
@@ -196,7 +196,7 @@ class TelaJogoPongPong(Tela):
         if getattr(self.navegador, "id_logado", None):
             id_j1 = self.navegador.id_logado
             apelido_j1 = self.navegador.apelido_logado
-            DadosUsuario.atualizar_pontuacao_jogo(apelido_j1, "dino", self.score1, tempo=tempo_jogado)
+            DadosUsuario.atualizar_pontuacao_jogo(apelido_j1, "pong-pong", self.score1, tempo=tempo_jogado)
         else:
             id_j1 = None
             apelido_j1 = "Visitante 1"
@@ -205,7 +205,7 @@ class TelaJogoPongPong(Tela):
         if getattr(self.navegador, "jgd_2_id", None):
             id_j2 = self.navegador.jgd_2_id
             apelido_j2 = self.navegador.jgd_2
-            DadosUsuario.atualizar_pontuacao_jogo(apelido_j2, "dino", self.score2, tempo=tempo_jogado)
+            DadosUsuario.atualizar_pontuacao_jogo(apelido_j2, "pong-pong", self.score2, tempo=tempo_jogado)
         else:
             id_j2 = None
             apelido_j2 = "Visitante 2"
@@ -222,49 +222,81 @@ class TelaJogoPongPong(Tela):
             tempo_jogado=tempo_jogado
         )
 
+        # Componentes da tela de fim de jogo
+        componentes = []
+        
+        # Texto do vencedor
+        componentes.append(TextoFormatado(
+            x=self.largura//2,
+            y=self.altura//2 - 60,
+            texto=f"{vencedor} venceu!",
+            tamanho=44,
+            cor_texto=Cores.amarelo_ouro(),
+            fonte_nome=Fontes.consolas(),
+            centralizado=True
+        ))
+        
+        # Botão Jogar Novamente
+        componentes.append(Botao(
+            x=self.largura//2 - 230,
+            y=self.altura//2 + 40,
+            largura=250,
+            altura=50,
+            texto="Jogar Novamente",
+            cor_fundo=Cores.verde(),
+            cor_hover=Cores.verde_escuro(),
+            cor_texto=Cores.preto(),
+            funcao=self.resetar_jogo,
+            fonte=Fontes.consolas(),
+            tamanho_fonte=28,
+            raio_borda=10
+        ))
+        
+        # Botão Voltar ao Menu
+        componentes.append(Botao(
+            x=self.largura//2 + 30,
+            y=self.altura//2 + 40,
+            largura=250,
+            altura=50,
+            texto="Voltar ao Menu",
+            cor_fundo=Cores.azul(),
+            cor_hover=Cores.azul_escuro(),
+            cor_texto=Cores.branco(),
+            funcao=lambda: self.navegador.ir_para("menu pong-pong"),
+            fonte=Fontes.consolas(),
+            tamanho_fonte=28,
+            raio_borda=10
+        ))
+
         rodando = True
         clock = pygame.time.Clock()
-        fonte = pygame.font.SysFont("consolas", 44, bold=True)
-        fonte_btn = pygame.font.SysFont("consolas", 28, bold=True)
-        texto = f"{vencedor} venceu!"
-        texto_render = fonte.render(texto, True, Cores.amarelo_ouro())
-
-        # Botões
-        btn_jogar = pygame.Rect(self.largura // 2 - 180, self.altura // 2 + 40, 160, 50)
-        btn_menu = pygame.Rect(self.largura // 2 + 20, self.altura // 2 + 40, 160, 50)
 
         while rodando:
+            # Fundo
             self.tela.fill(Cores.preto())
-            # Fundo opcional
             if TelaJogoPongPong.fundo_surface:
                 self.tela.blit(TelaJogoPongPong.fundo_surface, (0, 0))
-            # Mensagem
-            self.tela.blit(texto_render, (self.largura // 2 - texto_render.get_width() // 2, self.altura // 2 - 60))
-
-            # Botão Jogar Novamente
-            pygame.draw.rect(self.tela, Cores.verde(), btn_jogar, border_radius=10)
-            txt_jogar = fonte_btn.render("Jogar Novamente", True, Cores.preto())
-            self.tela.blit(txt_jogar, (btn_jogar.x + (btn_jogar.width - txt_jogar.get_width()) // 2, btn_jogar.y + 10))
-
-            # Botão Voltar ao Menu
-            pygame.draw.rect(self.tela, Cores.azul(), btn_menu, border_radius=10)
-            txt_menu = fonte_btn.render("Voltar ao Menu", True, Cores.branco())
-            self.tela.blit(txt_menu, (btn_menu.x + (btn_menu.width - txt_menu.get_width()) // 2, btn_menu.y + 10))
-
+            
+            # Desenha componentes
+            for componente in componentes:
+                componente.desenhar(self.tela)
+            
             pygame.display.flip()
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
+            # Processa eventos
+            for evento in pygame.event.get():
+                if evento.type == pygame.QUIT:
                     rodando = False
                     pygame.quit()
                     return
-                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                    if btn_jogar.collidepoint(event.pos):
-                        self.resetar_jogo()
-                        return  # Sai do método e volta ao jogo
-                    if btn_menu.collidepoint(event.pos):
-                        self.navegador.ir_para("menu pong-pong")
-                        return
+                
+                # Repassa eventos para os componentes
+                for componente in componentes:
+                    if hasattr(componente, 'processar_evento'):
+                        componente.processar_evento(evento)
+                        if not rodando:  # Se algum botão foi clicado
+                            break
+            
             clock.tick(30)
 
     def renderizar(self):
