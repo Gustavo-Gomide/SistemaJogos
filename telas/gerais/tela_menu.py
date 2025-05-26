@@ -66,7 +66,7 @@ class TelaMenu(Tela):
                 "cor": Cores.azul_royal(),
                 "cor_hover": Cores.azul_marinho(),
                 "cor_texto": Cores.branco(),
-                "fonte": Fontes.consolas(),
+                "fonte": Fontes.segoe_ui_emoji(),
                 "tamanho_fonte": 20,
                 "funcao": lambda: self.navegador.ir_para("musicas"),
                 "som": Efeitos.clique()
@@ -77,7 +77,7 @@ class TelaMenu(Tela):
                 "cor": Cores.verde(),
                 "cor_hover": Cores.verde_escuro(),
                 "cor_texto": Cores.preto(),
-                "fonte": Fontes.consolas(),
+                "fonte": Fontes.segoe_ui_emoji(),
                 "tamanho_fonte": 20,
                 "funcao": lambda: self.navegador.ir_para("configurações"),
                 "som": Efeitos.clique()
@@ -88,7 +88,7 @@ class TelaMenu(Tela):
                 "cor": Cores.laranja(),
                 "cor_hover": Cores.laranja_escuro(),
                 "cor_texto": Cores.preto(),
-                "fonte": Fontes.consolas(),
+                "fonte": Fontes.segoe_ui_emoji(),
                 "tamanho_fonte": 20,
                 "funcao": lambda: self.navegador.ir_para("cadastro"),
                 "som": Efeitos.clique()
@@ -99,18 +99,18 @@ class TelaMenu(Tela):
                 "cor": Cores.amarelo_ouro(),
                 "cor_hover": Cores.ocre(),
                 "cor_texto": Cores.preto(),
-                "fonte": Fontes.consolas(),
+                "fonte": Fontes.segoe_ui_emoji(),
                 "tamanho_fonte": 20,
                 "funcao": lambda: self.navegador.ir_para("ranking global"),
                 "som": Efeitos.clique()
             },
             {
-                "texto": "⏻ Sair",
+                "texto": "🐉 Sair",
                 "x": 40, "y": 460, "largura": 200, "altura": 60,
                 "cor": Cores.vermelho_vinho(),
                 "cor_hover": Cores.vermelho_escuro(),
                 "cor_texto": Cores.branco(),
-                "fonte": Fontes.consolas(),
+                "fonte": Fontes.segoe_ui_emoji(),
                 "tamanho_fonte": 20,
                 "funcao": self.sair,
                 "som": Efeitos.clique()
@@ -157,11 +157,11 @@ class TelaMenu(Tela):
                 x=20, y=i*70, largura=540, altura=60,
                 texto=f"▶ {jogo['nome']}",
                 cor_fundo=Cores.preto(),
-                cor_hover=Cores.ciano(),
-                cor_texto=Cores.amarelo_ouro(),
+                cor_hover=Cores.cobre(),
+                cor_texto=Cores.dourado(),
                 tamanho_fonte=28,
                 funcao=jogo["acao"],
-                fonte=Fontes.consolas(),
+                fonte=Fontes.segoe_ui_emoji(),
                 raio_borda=16
             )
             self.scroll_area_jogos.adicionar_componente(btn_jogo)
@@ -176,14 +176,14 @@ class TelaMenu(Tela):
 
         self.adicionar_componente(
             TextoFormatado(
-                x=802, y=37, texto=nome_exibicao,
+                x=752, y=37, texto=nome_exibicao,
                 tamanho=18, cor_texto=Cores.cinza_escuro(),
                 fonte_nome=Fontes.consolas(), centralizado=True
             )
         )
         self.adicionar_componente(
             TextoFormatado(
-                x=800, y=35, texto=nome_exibicao,
+                x=750, y=35, texto=nome_exibicao,
                 tamanho=18, cor_texto=Cores.menta(),
                 fonte_nome=Fontes.consolas(), centralizado=True
             )

@@ -169,7 +169,7 @@ class TelaLoginCadastro(Tela):
         if hasattr(self.navegador, "apelido_logado") and self.navegador.apelido_logado:
             self.adicionar_componente(
                 TextoFormatado(
-                    x=870, y=35, texto=self.navegador.apelido_logado,
+                    x=800, y=35, texto=f"{self.navegador.apelido_logado} (ID: {self.navegador.id_logado})",
                     tamanho=22, cor_texto=Cores.menta(), fonte_nome=Fontes.consolas(), centralizado=True
                 )
             )

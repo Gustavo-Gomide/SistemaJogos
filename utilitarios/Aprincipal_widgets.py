@@ -8,14 +8,12 @@ pygame.init()
 
 class Fontes:
     """
-    Classe utilitária para facilitar o uso de fontes do sistema no pygame.
+    Classe utilitária para fontes do sistema no pygame.
 
-    Opções de fontes disponíveis (nomes aceitos em pygame.font.SysFont):
-    --------------------------------------------------------------------
+    Fontes padrão:
+    --------------
     - Fontes.arial()             # Arial (ampla compatibilidade)
     - Fontes.verdana()           # Verdana (limpa, ótima para interfaces)
-    - Fontes.tahoma()            # Tahoma (sem serifa, moderna)
-    - Fontes.calibri()           # Calibri (moderna, padrão do Office)
     - Fontes.consolas()          # Consolas (monoespaçada, ótima para código)
     - Fontes.comic_sans()        # Comic Sans MS (informal, divertida)
     - Fontes.times()             # Times New Roman (tradicional, com serifa)
@@ -28,6 +26,21 @@ class Fontes:
     - Fontes.lucida_sans()       # Lucida Sans Unicode (sem serifa, clara)
     - Fontes.palatino()          # Palatino Linotype (com serifa, clássica)
     - Fontes.century_gothic()    # Century Gothic (sem serifa, arredondada)
+
+    Fontes com suporte a Emojis:
+    ---------------------------
+    - Fontes.segoe_ui_emoji()    # Segoe UI Emoji (Windows, melhor suporte)
+    - Fontes.noto_emoji()        # Noto Color Emoji (multiplataforma)
+    - Fontes.apple_emoji()       # Apple Color Emoji (macOS)
+    - Fontes.twemoji()           # Twitter Emoji (web)
+
+    Fontes para Jogos:
+    -----------------
+    - Fontes.press_start()       # Press Start 2P (estilo 8-bit)
+    - Fontes.pixel()             # Perfect DOS VGA (estilo pixel art)
+    - Fontes.arcade()            # Arcade Classic (estilo arcade)
+    - Fontes.game_over()         # Game Over (estilo retro)
+    - Fontes.minecraft()         # Minecraft (estilo blocky)
     """
 
     @staticmethod
@@ -109,6 +122,59 @@ class Fontes:
     def century_gothic():
         """Fonte Century Gothic (sem serifa, arredondada)."""
         return "century gothic"
+
+    # Fontes com suporte a Emojis
+    @staticmethod
+    def segoe_ui_emoji():
+        """Fonte Segoe UI Emoji (melhor suporte Windows)."""
+        return "segoe ui emoji"
+
+    @staticmethod
+    def noto_emoji():
+        """Fonte Noto Color Emoji (multiplataforma)."""
+        return "noto color emoji"
+
+    @staticmethod
+    def apple_emoji():
+        """Fonte Apple Color Emoji (macOS)."""
+        return "apple color emoji"
+
+    @staticmethod
+    def twemoji():
+        """Fonte Twemoji Mozilla (web)."""
+        return "twemoji mozilla"
+
+    # Fontes Temáticas para Jogos
+    @staticmethod
+    def press_start():
+        """Fonte Press Start 2P (estilo 8-bit)."""
+        return "press start 2p"
+
+    @staticmethod
+    def pixel():
+        """Fonte Perfect DOS VGA (estilo pixel art)."""
+        return "perfect dos vga 437"
+
+    @staticmethod
+    def arcade():
+        """Fonte Arcade Classic (estilo arcade)."""
+        return "arcade classic"
+
+    @staticmethod
+    def game_over():
+        """Fonte Game Over (estilo retro)."""
+        return "game over"
+
+    @staticmethod
+    def minecraft():
+        """Fonte Minecraft (estilo blocky)."""
+        return "minecraft"
+
+    # Fallback para emojis (combina múltiplas fontes)
+    @staticmethod
+    def com_emoji():
+        """Retorna string com múltiplas fontes para garantir suporte a emojis."""
+        return "segoe ui emoji, noto color emoji, apple color emoji"
 
 
 # =========================
@@ -664,7 +730,7 @@ class CaixaTexto:
     Você NÃO precisa chamar desenhar ou processar_evento manualmente.
     O sistema faz isso automaticamente ao adicionar a caixa à tela.
     """
-    def __init__(self, x=0, y=0, largura=0, altura=0, cor_fundo=Cores.preto(), cor_borda=Cores.preto(), cor_texto=Cores.preto(), fonte="arial", placeholder="", raio_borda=5, tamanho_fonte=36, texto=""):
+    def __init__(self, x=0, y=0, largura=0, altura=0, cor_fundo=Cores.preto(), cor_borda=Cores.preto(), cor_texto=Cores.preto(), fonte=Fontes.segoe_ui_emoji(), placeholder="", raio_borda=5, tamanho_fonte=36, texto=""):
         self.rect = pygame.Rect(x, y, largura, altura)
         self.cor_fundo = cor_fundo
         self.cor_borda = cor_borda
