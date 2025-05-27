@@ -61,7 +61,10 @@ class TelaRankPongPong(Tela):
     def carregar_ranking(self):
         usuarios = DadosUsuario.listar_usuarios()
         ranking = []
-
+        
+        if not usuarios:
+            return None
+        
         for usuario in usuarios:
             id_usuario = usuario[0]
             apelido = usuario[3]

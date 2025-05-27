@@ -135,7 +135,8 @@ class TelaJogoForca(Tela):
     def game_over(self):
         Musicas.tocar_efeito(self.efeito_gameover, volume=0.8)
         apelido = getattr(self.navegador, "apelido_logado", None) or "Visitante"
-        ForcaDB.registrar_partida(apelido, self.pontuacao)
+        id_usuario = getattr(self.navegador, "id_logado", None)
+        ForcaDB.registrar_partida(apelido, self.pontuacao, id_usuario=id_usuario)
         DadosUsuario.atualizar_pontuacao_jogo(apelido, "forca", self.pontuacao, tempo=120)
 
         # Limpa a tela
