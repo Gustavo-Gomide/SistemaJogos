@@ -46,6 +46,11 @@ from telas.jogo_snake.menu_Snake import TelaMenuSnake
 from telas.jogo_snake.rank_Snake import TelaRankSnake
 from telas.jogo_snake.historico_Snake import TelaHistoricoSnake
 
+# Importa as telas do Jogo Forca
+from telas.jogo_forca.forca import TelaJogoForca
+from telas.jogo_forca.forca_menu import TelaMenuForca
+from telas.jogo_forca.forca_rank import TelaRankForca
+from telas.jogo_forca.forca_historico import TelaHistoricoForca
 
 # Importa funções para criar o banco de dados e tabelas
 from databases.musica_anterior import MusicaAnterior # Musica Anterior é uma classe que gerencia a música anterior tocada no menu
@@ -57,12 +62,13 @@ from databases.dino_database import DinoDB # Classe para gerenciar o jogo Dino n
 from databases.tetris_database import TetrisDB # Classe para gerenciar o jogo Tetris no banco de dados
 from databases.flappy_database import FlappyDB # Classe para gerenciar o jogo Flappy Bird no banco de dados
 from databases.Snake_database import SnakeDB # Classe para gerenciar o jogo Snake no banco de dados
+from databases.forca_database import ForcaDB # Classe para gerenciar o jogo Forca no banco de dados
 
 # configurações banco de dados
 BancoDados.configurar_conexao(
     host="localhost",
     user= "root",
-    password= "",
+    password= "S@t1lanh4v.a0484",
     database= "jogos"
 )
 
@@ -78,6 +84,7 @@ DinoDB.criar_tabela() # Cria a tabela de resultados do Jogo Dino
 TetrisDB.criar_tabela() # Cria a tabela de resultados do Jogo Tetris
 FlappyDB.criar_tabela() # Cria a tabela de resultados do Jogo Flappy Bird
 SnakeDB.criar_tabela() # Cria a tabela de resultados do Jogo Snake
+ForcaDB.criar_tabela() # Cria a tabela de resultados do Jogo Forca
 
 # Instancia o navegador, responsável por gerenciar as telas
 navegador = Navegador()
@@ -127,6 +134,12 @@ navegador.registrar_tela("menu snake", TelaMenuSnake)
 navegador.registrar_tela("jogo snake", TelaJogoSnake)
 navegador.registrar_tela("ranking snake", TelaRankSnake)
 navegador.registrar_tela("historico snake", TelaHistoricoSnake)
+
+# Registra as telas do Jogo Forca
+navegador.registrar_tela("menu forca", TelaMenuForca)
+navegador.registrar_tela("jogo forca", TelaJogoForca)
+navegador.registrar_tela("ranking forca", TelaRankForca)
+navegador.registrar_tela("historico forca", TelaHistoricoForca)
 
 # (adicione outras telas aqui se criar mais jogos ou funcionalidades...)
 

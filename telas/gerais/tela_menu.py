@@ -149,6 +149,7 @@ class TelaMenu(Tela):
             {"nome": "Tetris", "acao": lambda: self.navegador.ir_para("menu tetris")},
             {"nome": "Flappy Bird", "acao": lambda: self.navegador.ir_para("menu flappy")},
             {"nome": "Snake", "acao": lambda: self.navegador.ir_para("menu snake")},
+            {"nome": "Forca", "acao": lambda: self.navegador.ir_para("menu forca")},
             # Adicione mais jogos conforme necessário
         ]
 

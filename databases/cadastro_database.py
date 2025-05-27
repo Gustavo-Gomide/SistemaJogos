@@ -25,7 +25,9 @@ class DadosUsuario:
         "tempo_jogo_pong": "INT DEFAULT 0",
         "pontuacao_pong": "INT DEFAULT 0",
         "tempo_jogo_velha": "INT DEFAULT 0",
-        "pontuacao_velha": "INT DEFAULT 0"
+        "pontuacao_velha": "INT DEFAULT 0",
+        "tempo_jogo_forca": "INT DEFAULT 0",
+        "pontuacao_forca": "INT DEFAULT 0"
     }
 
     @classmethod
@@ -61,7 +63,8 @@ class DadosUsuario:
             "tempo_jogo_pong": 0,
             "pontuacao_pong": 0,
             "tempo_jogo_velha": 0,
-            "pontuacao_velha": 0
+            "pontuacao_velha": 0,
+            "pontuacao_forca": 0
         }
         BancoDados.inserir_dados("usuarios", dados)
 
@@ -112,7 +115,7 @@ class DadosUsuario:
             f"WHERE apelido = '{apelido}'",
             colunas=[
                 "tempo_jogo_tetris", "tempo_jogo_flappy", "tempo_jogo_dino", "tempo_jogo_snake", "tempo_jogo_pong", "tempo_jogo_velha",
-                "pontuacao_tetris", "pontuacao_flappy", "pontuacao_dino", "pontuacao_snake", "pontuacao_pong", "pontuacao_velha"
+                "pontuacao_tetris", "pontuacao_flappy", "pontuacao_dino", "pontuacao_snake", "pontuacao_pong", "pontuacao_velha", "pontuacao_forca"
             ]
         )
         if usuario and len(usuario) > 0:
