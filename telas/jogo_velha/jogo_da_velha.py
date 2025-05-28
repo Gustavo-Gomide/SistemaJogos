@@ -278,7 +278,7 @@ class HistoricoVelhaTela(Tela):
     def _montar(self):
         self.componentes.clear()
         self.adicionar_componente(TextoFormatado(
-            x=300, y=30, texto="HISTÓRICO",
+            x=400, y=30, texto="HISTÓRICO",
             tamanho=36, cor_texto=Cores.amarelo(),
             fonte_nome=Fontes.consolas(), centralizado=True
         ))
