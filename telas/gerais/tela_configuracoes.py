@@ -14,7 +14,7 @@ class TelaConfiguracoes(Tela):
             altura=500,
             titulo="Configurações de Volume",
             cor_fundo=Cores.preto(),
-            navegador=navegador
+            navegador=navegador,
         )
         self.navegador = navegador
 
@@ -113,7 +113,7 @@ class TelaConfiguracoes(Tela):
 
     def testar_fundo(self):
         """Toca uma música de fundo de teste no volume selecionado."""
-        Musicas.tocar_fundo("jogo", volume=self.navegador.volume_fundo)
+        Musicas.tocar_fundo("jogo", volume=self.navegador.volume_fundo, teste=True)
 
     def atualizar(self):
         """Atualiza os volumes globais do navegador conforme os sliders."""

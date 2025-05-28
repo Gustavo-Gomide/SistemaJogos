@@ -5,7 +5,7 @@ class ForcaDB(BancoDados):
     def criar_tabela(cls):
         colunas = {
             "id": "INT AUTO_INCREMENT PRIMARY KEY",
-            "id_usuario": "INT",
+            "id_usuario": "INT NULL",
             "apelido": "VARCHAR(50) NOT NULL",
             "pontuacao": "INT NOT NULL",
             "data_partida": "DATETIME DEFAULT CURRENT_TIMESTAMP"

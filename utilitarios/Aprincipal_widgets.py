@@ -511,7 +511,7 @@ class Tela:
             self.efeito_saida = efeito_saida
         self.componentes = []
 
-        # --- NOVO: define o ícone da janela se logo for fornecida ---
+        # ---- NOVO: define o ícone da janela se logo for fornecida ----
         if self.logo:
             if isinstance(self.logo, str):
                 from utilitarios.imagens import carregar_imagem
@@ -544,10 +544,6 @@ class Tela:
                 else:
                     self.tela = pygame.display.set_mode((self.largura, self.altura), pygame.FULLSCREEN)
                 self.tela_cheia = not self.tela_cheia
-            if evento.type == pygame.MOUSEBUTTONDOWN:
-                print('som_fundo', MusicaAnterior.get_musica_anterior())
-                if self.tela_selecao_musica:
-                    print('tela_selecao_musica', MusicaAnterior.get_musica_anterior())
             for componente in self.componentes:
                 if hasattr(componente, 'processar_evento'):
                     componente.processar_evento(evento)
@@ -634,7 +630,7 @@ class Botao:
     Você NÃO precisa chamar desenhar, processar_evento ou atualizar manualmente.
     O sistema faz isso automaticamente ao adicionar o botão à tela.
     """
-    def __init__(self, x=0, y=0, largura=0, altura=0, cor_fundo=Cores.verde(), cor_hover=Cores.verde(), cor_texto=Cores.preto(), texto="botao", raio_borda=5, funcao: Callable|None = None,som = "clique", volume = None, imagem=None, fonte="arial", tamanho_fonte=36):
+    def __init__(self, x=0, y=0, largura=0, altura=0, cor_fundo=Cores.verde(), cor_hover=Cores.verde(), cor_texto=Cores.preto(), texto="botao", raio_borda=5, funcao: Callable|None = None,som = "clique", volume = None, imagem=None, fonte=Fontes.segoe_ui_emoji(), tamanho_fonte=36):
         self.rect = pygame.Rect(x, y, largura, altura)
         self.som = None
         if som:
@@ -801,7 +797,7 @@ class TextoFormatado:
     Você NÃO precisa chamar desenhar manualmente.
     O sistema faz isso automaticamente ao adicionar o texto à tela.
     """
-    def __init__(self, x=0, y=0, texto="TEXTO FORMATADO", cor_texto=Cores.preto(), tamanho=36, fonte_nome='arial', centralizado=False):
+    def __init__(self, x=0, y=0, texto="TEXTO FORMATADO", cor_texto=Cores.preto(), tamanho=36, fonte_nome=Fontes.segoe_ui_emoji(), centralizado=False):
         self.x = x
         self.y = y
         self.texto = texto

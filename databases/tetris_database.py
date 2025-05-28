@@ -1,3 +1,4 @@
+from pickle import NONE
 from utilitarios.Aprincipal_database import BancoDados
 
 class TetrisDB(BancoDados):
@@ -5,7 +6,7 @@ class TetrisDB(BancoDados):
     def criar_tabela(cls):
         colunas = {
             "id": "INT AUTO_INCREMENT PRIMARY KEY",
-            "id_usuario": "INT",
+            "id_usuario": "INT NULL",
             "apelido": "VARCHAR(50) NOT NULL",
             "pontuacao": "INT NOT NULL",
             "linhas": "INT NOT NULL",
@@ -17,7 +18,7 @@ class TetrisDB(BancoDados):
         BancoDados.criar_tabela_avancada("tetris_partidas", colunas, foreign_keys)
 
     @classmethod
-    def registrar_partida(cls, id_usuario, apelido, pontuacao, linhas):
+    def registrar_partida(cls, id_usuario=None, apelido="", pontuacao=0, linhas=0):
         """
         Registra uma partida do Tetris.
         :param id_usuario: ID do usuário (None se for visitante)

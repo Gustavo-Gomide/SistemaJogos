@@ -122,6 +122,14 @@ class Fundos:
     def tetris():
         return 'tetris'
 
+    @staticmethod
+    def snake():
+        return 'snake'
+    
+    @staticmethod
+    def flappy():
+        return 'flappy'
+
 class Musicas:
     """
     Classe utilitária para controle de músicas de fundo e efeitos sonoros.
@@ -138,10 +146,11 @@ class Musicas:
     musica_atual_nome = None  # Adicione este atributo de classe
 
     @staticmethod
-    def tocar_fundo(nome: str, volume: float = 0.5, loop: bool = True):
+    def tocar_fundo(nome: str, volume: float = 0.5, loop: bool = True, teste=False):
         """Toca uma música de fundo pelo nome do dicionário 'fundos'."""
-        if Musicas.musica_atual_nome == nome and Musicas.esta_tocando():
-            return  # Já está tocando essa música
+        if not teste:
+            if Musicas.musica_atual_nome == nome and Musicas.esta_tocando():
+                return  # Já está tocando essa música
         caminho = fundos.get(nome)
         if not caminho:
             print(f"Música de fundo '{nome}' não encontrada.")

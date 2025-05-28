@@ -9,7 +9,7 @@ class TelaHistoricoFlappy(Tela):
         )
         self.navegador = navegador
         self.adicionar_componente(TextoFormatado(
-            x=200, y=40, texto="HISTÓRICO FLAPPY", tamanho=38, cor_texto=Cores.amarelo_ouro(),
+            x=200, y=80, texto="HISTÓRICO FLAPPY", tamanho=38, cor_texto=Cores.amarelo_ouro(),
             fonte_nome=Fontes.consolas(), centralizado=True
         ))
         self.scroll_area = ScrollArea(

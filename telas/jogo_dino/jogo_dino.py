@@ -1,5 +1,6 @@
 import pygame
 import random
+from utilitarios.musicas import Efeitos, Musicas
 from utilitarios.Aprincipal_widgets import Tela, Botao, Cores, TextoFormatado, Fontes
 from databases.dino_database import DinoDB
 from databases.cadastro_database import DadosUsuario
@@ -60,6 +61,7 @@ class TelaJogoDino(Tela):
         self.fonte = pygame.font.SysFont("consolas", 32)
         self.clock = pygame.time.Clock()
         self.spawn_timer = 0
+        self.som_game_over = Efeitos.empate()
 
         self.adicionar_componente(Botao(
             x=20, y=20, largura=120, altura=38, texto="Voltar",
@@ -84,6 +86,7 @@ class TelaJogoDino(Tela):
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE or event.key == pygame.K_UP:
                         self.dino.pular()
+                        Musicas.tocar_efeito(Efeitos.coins())
                     if event.key == pygame.K_ESCAPE:
                         self.voltar_menu()
                         return
@@ -100,6 +103,7 @@ class TelaJogoDino(Tela):
 
             # Colisão
             if pygame.sprite.spritecollideany(self.dino, self.cactos):
+                Musicas.tocar_efeito(self.som_game_over)
                 self.game_over()
                 return
 
@@ -112,24 +116,27 @@ class TelaJogoDino(Tela):
         pygame.draw.line(self.tela, (120, 120, 120), (0, 350), (700, 350), 3)
         self.tudo.draw(self.tela)
         texto = self.fonte.render(f"Pontos: {self.pontuacao}", True, (0, 0, 0))
-        self.tela.blit(texto, (500, 20))
+        self.tela.blit(texto, (0, 20))
         pygame.display.flip()
 
     def game_over(self):
         apelido = getattr(self.navegador, "apelido_logado", None) or "Visitante"
         
-        # Get user id if logged in
+       # Get user id if logged in
         id_usuario = None
         if apelido != "Visitante":
             usuarios = DadosUsuario.listar_usuarios()
-            for u in usuarios:
-                if u[3] == apelido:  # Assuming apelido is at index 3
-                    id_usuario = u[0]  # Assuming id is at index 0
-                    break
+            if usuarios:
+                for u in usuarios:
+                    if u[3] == apelido:  # Assuming apelido is at index 3
+                        id_usuario = u[0]  # Assuming id is at index 0
+                        break
         
-        # Register game with id_usuario
-        DinoDB.registrar_partida(id_usuario, apelido, self.pontuacao)
-        DadosUsuario.atualizar_pontuacao_jogo(apelido, "dino", self.pontuacao, tempo=120)
+                # Register game with id_usuario
+                DinoDB.registrar_partida(id_usuario, apelido, int(self.pontuacao))
+                DadosUsuario.atualizar_pontuacao_jogo(apelido, "dino", self.pontuacao, tempo=120)
+        else:
+            DinoDB.registrar_partida(apelido=apelido, pontuacao=self.pontuacao)
         
         fonte = pygame.font.SysFont("consolas", 48)
         texto = fonte.render("Game Over!", True, (200, 0, 0))
