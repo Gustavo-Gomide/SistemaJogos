@@ -46,6 +46,7 @@ class TelaJogoTetris(Tela):
         self.pontuacao = 0
         self.linhas = 0
         self.clock = pygame.time.Clock()
+        self.fonte = pygame.font.SysFont("consolas", 28)
         self.rodando = True
         self.efeito_linha = "correto"
         self.efeito_gameover = "fim"
