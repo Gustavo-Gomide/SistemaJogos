@@ -265,7 +265,7 @@ class Popup:
 class HistoricoVelhaTela(Tela):
     def __init__(self, navegador, banco=None):
         super().__init__(
-            largura=600,
+            largura=800,
             altura=600,
             titulo="Histórico Jogo da Velha",
             cor_fundo=Cores.preto(),
@@ -284,14 +284,14 @@ class HistoricoVelhaTela(Tela):
             fonte_nome=Fontes.consolas(), centralizado=True
         ))
         btn_apagar = Botao(
-            x=150, y=450, largura=300, altura=60,
+            x=250, y=450, largura=300, altura=60,
             texto="Apagar Histórico", cor_fundo=Cores.vermelho_escuro(), cor_hover=Cores.vermelho_vinho(),
             cor_texto=Cores.branco(), fonte=Fontes.consolas(), tamanho_fonte=28,
             funcao=lambda: (Musicas.tocar_efeito('clique'), self._apagar_historico())
         )
         self.adicionar_componente(btn_apagar)
         btn_voltar = Botao(
-            x=150, y=520, largura=300, altura=60,
+            x=250, y=520, largura=300, altura=60,
             texto="Voltar ao Menu", cor_fundo=Cores.vermelho_vinho(), cor_hover=Cores.vermelho_escuro(),
             cor_texto=Cores.branco(), fonte=Fontes.consolas(), tamanho_fonte=28,
             funcao=lambda: (Musicas.tocar_efeito('clique'), self.navegador.ir_para("menu jogo-da-velha"))
