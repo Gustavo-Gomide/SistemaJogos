@@ -1,4 +1,4 @@
-from eel import sleep
+from time import sleep
 import pygame
 import sys
 from typing import Callable
