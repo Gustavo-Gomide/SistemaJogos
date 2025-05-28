@@ -150,7 +150,6 @@ class TelaMenu(Tela):
             {"nome": "Flappy Bird", "acao": lambda: self.navegador.ir_para("menu flappy")},
             {"nome": "Snake", "acao": lambda: self.navegador.ir_para("menu snake")},
             {"nome": "Forca", "acao": lambda: self.navegador.ir_para("menu forca")},
-            {"nome": "Sistema Bancário", "acao": lambda: self.navegador.ir_para("login_banco")},
         ]
 
         for i, jogo in enumerate(jogos_disponiveis):
