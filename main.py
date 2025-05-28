@@ -60,6 +60,7 @@ from telas.sistema_banco.tela_saldo import TelaSaldo
 from telas.sistema_banco.tela_deposito import TelaDeposito
 from telas.sistema_banco.tela_saque import TelaSaque
 from telas.sistema_banco.tela_pix import TelaPix
+from telas.sistema_banco.completo import MenuSimuladorTela, ConsultarSaldoTela, DepositoTela, PixTela, SaqueTela
 
 # Importa funções para criar o banco de dados e tabelas
 from databases.musica_anterior import MusicaAnterior # Musica Anterior é uma classe que gerencia a música anterior tocada no menu
@@ -73,12 +74,13 @@ from databases.flappy_database import FlappyDB # Classe para gerenciar o jogo Fl
 from databases.Snake_database import SnakeDB # Classe para gerenciar o jogo Snake no banco de dados
 from databases.forca_database import ForcaDB # Classe para gerenciar o jogo Forca no banco de dados
 from databases.sistema_banco import SistemaBanco # Classe para gerenciar o sistema bancário
+from databases.simulador_database import Simulador_Banco_BD  # Classe para gerenciar o sistema bancário
 
 # configurações banco de dados
 BancoDados.configurar_conexao(
     host="localhost",
     user="root",  # Your MySQL username
-    password="81472529",  # Your MySQL password
+    password="",  # Your MySQL password
     database="jogos"  # Nome do banco de dados que será criado
 )
 
@@ -96,6 +98,7 @@ FlappyDB.criar_tabela() # Cria a tabela de resultados do Jogo Flappy Bird
 SnakeDB.criar_tabela() # Cria a tabela de resultados do Jogo Snake
 ForcaDB.criar_tabela() # Cria a tabela de resultados do Jogo Forca
 SistemaBanco.criar_tabelas_banco()  # Cria as tabelas do sistema bancário
+Simulador_Banco_BD.criar_tabelas()
 
 # Instancia o navegador, responsável por gerenciar as telas
 navegador = Navegador()
@@ -152,14 +155,18 @@ navegador.registrar_tela("jogo forca", TelaJogoForca)
 navegador.registrar_tela("ranking forca", TelaRankForca)
 navegador.registrar_tela("historico forca", TelaHistoricoForca)
 
+# Cria uma única instância do banco de dados
+banco = Simulador_Banco_BD()
+
 # Registro das telas do sistema bancário
-navegador.registrar_tela("login_banco", TelaLogin)
-navegador.registrar_tela("registro_banco", TelaRegistro)
-navegador.registrar_tela("menu_banco", TelaMenuBanco)
-navegador.registrar_tela("saldo_banco", TelaSaldo)
-navegador.registrar_tela("deposito_banco", TelaDeposito)
-navegador.registrar_tela("saque_banco", TelaSaque)
-navegador.registrar_tela("pix_banco", TelaPix)
+navegador.registrar_tela("login_banco", MenuSimuladorTela)
+navegador.registrar_tela("registro_banco", lambda nav: TelaRegistro(nav, banco))
+navegador.registrar_tela("menu_banco", MenuSimuladorTela)
+navegador.registrar_tela("Consultar saldo", lambda nav: ConsultarSaldoTela(nav, banco))
+navegador.registrar_tela("deposito", lambda nav: DepositoTela(nav, banco))
+navegador.registrar_tela("saque", lambda nav: SaqueTela(nav, banco))
+navegador.registrar_tela("pix", lambda nav: PixTela(nav, banco))
+
 
 #navegador.ir_para("login")
 

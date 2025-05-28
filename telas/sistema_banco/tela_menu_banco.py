@@ -8,6 +8,8 @@ class TelaMenuBanco(Tela):
         # Título
         self.titulo = TextoFormatado(400, 100, texto="Menu do Banco", tamanho=36, centralizado=True)
         self.adicionar_componente(self.titulo)
+        self.criarConta()
+
 
         # Botões
         opcoes = [
@@ -31,3 +33,7 @@ class TelaMenuBanco(Tela):
     def consultar_saldo(self, conta_selecionada_obj):
         saldo = SistemaBancario.consultar_saldo(conta_selecionada_obj.id_conta)
         return saldo if saldo is not None else "Erro ao consultar saldo"
+    
+    def criarConta(self):
+        sistemaBanco = SistemaBancario()
+        sistemaBanco.criar_conta_bancaria(sistemaBanco.cliente_atual, 'pf')

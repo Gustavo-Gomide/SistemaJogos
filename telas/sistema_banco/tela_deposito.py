@@ -5,7 +5,7 @@ from databases.sistema_banco import Conta
 class TelaDeposito(Tela):
     def __init__(self, navegador):
         super().__init__(largura=800, altura=600, titulo="Depósito - Banco", cor_fundo=Cores.preto(), navegador=navegador)
-        self.banco_dados = Conta(id_conta_atual=id, )  # Inicializa com uma conta vazia
+        #self.banco_dados = Conta()  # Inicializa com uma conta vazia
 
         self.titulo = TextoFormatado(400, 100, texto="REALIZAR DEPÓSITO", tamanho=36, centralizado=True, cor_texto=Cores.dourado())
         self.adicionar_componente(self.titulo)
@@ -28,7 +28,7 @@ class TelaDeposito(Tela):
     def fazer_deposito(self):
         try:
             valor = float(self.input_valor.texto)
-            if self.banco_dados.realizar_deposito(self.banco_dados.id_conta_atual, valor):
+            if self.banco_dados.depositar(self.banco_dados.id_conta_atual, valor):
                 self.msg_status.atualizar_texto(f"Depósito de R$ {valor:.2f} realizado com sucesso!")
             else:
                 self.msg_status.atualizar_texto("Erro ao realizar depósito!")

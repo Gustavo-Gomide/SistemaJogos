@@ -1,11 +1,12 @@
 import pygame
 from utilitarios.Aprincipal_widgets import Tela, Botao, CaixaTexto, TextoFormatado, Cores, Fontes
-from databases.sistema_banco import SistemaBanco
+from databases.sistema_banco import SistemaBancario
 
 class TelaRegistro(Tela):
     def __init__(self, navegador):
         super().__init__(largura=800, altura=600, titulo="Registro - Banco", cor_fundo=Cores.preto(), navegador=navegador)
-        self.banco_dados = SistemaBanco()
+        self.banco_dados = SistemaBancario()
+        self.conta = None
 
         # Título com estilo retro
         self.titulo = TextoFormatado(400, 80,
@@ -99,4 +100,5 @@ class TelaRegistro(Tela):
         if self.banco_dados.registrar_cliente(nome, cpf, senha):
             self.navegador.ir_para("login_banco")
         else:
-            self.msg_status.atualizar_texto("Erro ao registrar. CPF já existe ou é inválido.")
+            self.msg_status.atualizar_texto("Erro ao registrar. CPF já existe ou é inválido.")        
+        

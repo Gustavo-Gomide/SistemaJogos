@@ -287,6 +287,27 @@ class BancoDados:
             print(f"❌ Erro ao executar SQL: {erro}")
         finally:
             cls.fechar_conexao_curso(conexao, cursor)
+        
+    @staticmethod
+    def executar_select_customizado(cls, query, parametros=None):
+        """
+        Executa uma consulta SELECT personalizada e retorna os resultados como uma lista de dicionários.
+
+        :param query: A consulta SQL a ser executada.
+        :param parametros: Tupla de parâmetros para a consulta (opcional).
+        :return: Lista de dicionários representando as linhas retornadas.
+        """
+        try:
+            conexao = cls.conectar()
+            cursor = conexao.cursor(dictionary=True)
+            cursor.execute(query, parametros or ())
+            resultados = cursor.fetchall()
+            return resultados
+        except mysql.connector.Error as erro:
+            print(f"Erro ao executar a consulta: {erro}")
+            return []
+        finally:
+            cls.fechar_conexao_curso(conexao, cursor)
 
 # Exemplo de uso como script
 if __name__ == "__main__":

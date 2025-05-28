@@ -66,7 +66,7 @@ class SistemaBanco(BancoDados):
 DB_CONFIG = {
     'host': 'localhost',
     'user': 'root',  # Changed from 'seu_usuario_mysql'
-    'password': '81472529',  # Changed from 'sua_senha_mysql'
+    'password': '',  # Changed from 'sua_senha_mysql'
     'database': 'jogos',
     'port': 3306
 }
@@ -252,10 +252,8 @@ class Cliente:
 
 class Conta:
     """Representa uma conta bancária."""
-    def __init__(self, id_conta, id_cliente, numero_conta, agencia, tipo_conta, saldo=0.00, data_abertura=None):
-        self.id_conta = id_conta
+    def __init__(self, id_cliente, agencia="001", tipo_conta="pf", saldo=0.00, data_abertura=datetime.now()):
         self.id_cliente = id_cliente # ID do cliente dono da conta
-        self.numero_conta = numero_conta
         self.agencia = agencia
         self.tipo_conta = tipo_conta.upper()
         self.saldo = float(saldo) # Garante que saldo seja float
@@ -402,6 +400,7 @@ class SistemaBancario:
     """Classe principal para gerenciar as operações do banco."""
     def __init__(self):
         self.clientes_carregados = {} # Cache simples de clientes carregados {id_cliente: ClienteObj}
+        self.cliente_atual = None
 
     def _hash_senha(self, senha):
         """Helper para gerar hash de senha."""
@@ -447,6 +446,7 @@ class SistemaBancario:
             )
             self.clientes_carregados[cliente_obj.id_cliente] = cliente_obj # Cache
             print(f"-> Login bem-sucedido para {cliente_obj.nome}.")
+            self.cliente_atual = cliente_obj
             return cliente_obj
         
         print(f"!! Falha no login para CPF '{cpf}'. Senha incorreta ou CPF não encontrado.")
