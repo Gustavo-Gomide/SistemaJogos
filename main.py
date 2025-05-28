@@ -52,16 +52,6 @@ from telas.jogo_forca.forca_menu import TelaMenuForca
 from telas.jogo_forca.forca_rank import TelaRankForca
 from telas.jogo_forca.forca_historico import TelaHistoricoForca
 
-# Importa as telas do sistema bancário
-from telas.sistema_banco.tela_login import TelaLogin
-from telas.sistema_banco.tela_registro import TelaRegistro
-from telas.sistema_banco.tela_menu_banco import TelaMenuBanco
-from telas.sistema_banco.tela_saldo import TelaSaldo
-from telas.sistema_banco.tela_deposito import TelaDeposito
-from telas.sistema_banco.tela_saque import TelaSaque
-from telas.sistema_banco.tela_pix import TelaPix
-from telas.sistema_banco.completo import MenuSimuladorTela, ConsultarSaldoTela, DepositoTela, PixTela, SaqueTela
-
 # Importa funções para criar o banco de dados e tabelas
 from databases.musica_anterior import MusicaAnterior # Musica Anterior é uma classe que gerencia a música anterior tocada no menu
 from utilitarios.Aprincipal_database import BancoDados # Classe base para operações com banco de dados MySQL
@@ -73,8 +63,6 @@ from databases.tetris_database import TetrisDB # Classe para gerenciar o jogo Te
 from databases.flappy_database import FlappyDB # Classe para gerenciar o jogo Flappy Bird no banco de dados
 from databases.Snake_database import SnakeDB # Classe para gerenciar o jogo Snake no banco de dados
 from databases.forca_database import ForcaDB # Classe para gerenciar o jogo Forca no banco de dados
-from databases.sistema_banco import SistemaBanco # Classe para gerenciar o sistema bancário
-from databases.simulador_database import Simulador_Banco_BD  # Classe para gerenciar o sistema bancário
 
 # configurações banco de dados
 BancoDados.configurar_conexao(
@@ -97,8 +85,6 @@ TetrisDB.criar_tabela() # Cria a tabela de resultados do Jogo Tetris
 FlappyDB.criar_tabela() # Cria a tabela de resultados do Jogo Flappy Bird
 SnakeDB.criar_tabela() # Cria a tabela de resultados do Jogo Snake
 ForcaDB.criar_tabela() # Cria a tabela de resultados do Jogo Forca
-SistemaBanco.criar_tabelas_banco()  # Cria as tabelas do sistema bancário
-Simulador_Banco_BD.criar_tabelas()
 
 # Instancia o navegador, responsável por gerenciar as telas
 navegador = Navegador()
@@ -154,19 +140,6 @@ navegador.registrar_tela("menu forca", TelaMenuForca)
 navegador.registrar_tela("jogo forca", TelaJogoForca)
 navegador.registrar_tela("ranking forca", TelaRankForca)
 navegador.registrar_tela("historico forca", TelaHistoricoForca)
-
-# Cria uma única instância do banco de dados
-banco = Simulador_Banco_BD()
-
-# Registro das telas do sistema bancário
-navegador.registrar_tela("login_banco", MenuSimuladorTela)
-navegador.registrar_tela("registro_banco", lambda nav: TelaRegistro(nav, banco))
-navegador.registrar_tela("menu_banco", MenuSimuladorTela)
-navegador.registrar_tela("Consultar saldo", lambda nav: ConsultarSaldoTela(nav, banco))
-navegador.registrar_tela("deposito", lambda nav: DepositoTela(nav, banco))
-navegador.registrar_tela("saque", lambda nav: SaqueTela(nav, banco))
-navegador.registrar_tela("pix", lambda nav: PixTela(nav, banco))
-
 
 #navegador.ir_para("login")
 
