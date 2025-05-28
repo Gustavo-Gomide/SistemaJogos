@@ -1,3 +1,12 @@
+from utilitarios.Aprincipal_database import BancoDados # Classe base para operações com banco de dados MySQL
+# configurações banco de dados
+BancoDados.configurar_conexao(
+    host="localhost",
+    user= "root",
+    password= "",
+    database= "jogos"
+)
+
 # NAVEGADOR DE TELAS PARA O JOGO
 # Importa as classes necessárias para o navegador de telas
 from navegador import Navegador
@@ -59,7 +68,6 @@ from telas.sistema_banco.sistema_banco import TelaMenuBanco
 
 # Importa funções para criar o banco de dados e tabelas
 from databases.musica_anterior import MusicaAnterior # Musica Anterior é uma classe que gerencia a música anterior tocada no menu
-from utilitarios.Aprincipal_database import BancoDados # Classe base para operações com banco de dados MySQL
 from databases.cadastro_database import DadosUsuario # Classe para gerenciar usuários no banco de dados
 from databases.PongPong_database import PongPongDB # Classe para gerenciar partidas do PongPong
 from databases.velha_database import BancoDadosVelha # Classe para gerenciar o jogo da velha no banco de dados
@@ -69,14 +77,6 @@ from databases.flappy_database import FlappyDB # Classe para gerenciar o jogo Fl
 from databases.Snake_database import SnakeDB # Classe para gerenciar o jogo Snake no banco de dados
 from databases.forca_database import ForcaDB # Classe para gerenciar o jogo Forca no banco de dados
 from databases.sistema_banco import SistemaBanco # Classe para gerenciar o sistema bancário
-
-# configurações banco de dados
-BancoDados.configurar_conexao(
-    host="localhost",
-    user= "root",
-    password= "S@t1lanh4v.a0484",
-    database= "jogos"
-)
 
 # Cria o banco de dados e as tabelas necessárias
 # (adicione outras funções aqui se criar mais tabelas no futuro)
