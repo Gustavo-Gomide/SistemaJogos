@@ -52,10 +52,14 @@ from telas.jogo_forca.forca_menu import TelaMenuForca
 from telas.jogo_forca.forca_rank import TelaRankForca
 from telas.jogo_forca.forca_historico import TelaHistoricoForca
 
-from telas.sistema_banco.sistema_banco import TelaBanco # Importa a tela do sistema bancário
-from telas.sistema_banco.sistema_banco import TelaLogin
-from telas.sistema_banco.sistema_banco import TelaRegistro
-from telas.sistema_banco.sistema_banco import TelaMenuBanco
+# Importa as telas do sistema bancário
+from telas.sistema_banco.tela_login import TelaLogin
+from telas.sistema_banco.tela_registro import TelaRegistro
+from telas.sistema_banco.tela_menu_banco import TelaMenuBanco
+from telas.sistema_banco.tela_saldo import TelaSaldo
+from telas.sistema_banco.tela_deposito import TelaDeposito
+from telas.sistema_banco.tela_saque import TelaSaque
+from telas.sistema_banco.tela_pix import TelaPix
 
 # Importa funções para criar o banco de dados e tabelas
 from databases.musica_anterior import MusicaAnterior # Musica Anterior é uma classe que gerencia a música anterior tocada no menu
@@ -73,9 +77,9 @@ from databases.sistema_banco import SistemaBanco # Classe para gerenciar o siste
 # configurações banco de dados
 BancoDados.configurar_conexao(
     host="localhost",
-    user= "root",
-    password= "S@t1lanh4v.a0484",
-    database= "jogos"
+    user="root",  # Your MySQL username
+    password="81472529",  # Your MySQL password
+    database="jogos"  # Nome do banco de dados que será criado
 )
 
 # Cria o banco de dados e as tabelas necessárias
@@ -91,7 +95,7 @@ TetrisDB.criar_tabela() # Cria a tabela de resultados do Jogo Tetris
 FlappyDB.criar_tabela() # Cria a tabela de resultados do Jogo Flappy Bird
 SnakeDB.criar_tabela() # Cria a tabela de resultados do Jogo Snake
 ForcaDB.criar_tabela() # Cria a tabela de resultados do Jogo Forca
-SistemaBanco.criar_tabelas_no_bd() # Cria a tabela de contas do sistema bancário
+SistemaBanco.criar_tabelas_banco()  # Cria as tabelas do sistema bancário
 
 # Instancia o navegador, responsável por gerenciar as telas
 navegador = Navegador()
@@ -148,10 +152,14 @@ navegador.registrar_tela("jogo forca", TelaJogoForca)
 navegador.registrar_tela("ranking forca", TelaRankForca)
 navegador.registrar_tela("historico forca", TelaHistoricoForca)
 
-navegador.registrar_tela("sistema bancário", TelaBanco) # Tela do sistema bancário
-navegador.registrar_tela("login", TelaLogin)
-navegador.registrar_tela("registro", TelaRegistro)
+# Registro das telas do sistema bancário
+navegador.registrar_tela("login_banco", TelaLogin)
+navegador.registrar_tela("registro_banco", TelaRegistro)
 navegador.registrar_tela("menu_banco", TelaMenuBanco)
+navegador.registrar_tela("saldo_banco", TelaSaldo)
+navegador.registrar_tela("deposito_banco", TelaDeposito)
+navegador.registrar_tela("saque_banco", TelaSaque)
+navegador.registrar_tela("pix_banco", TelaPix)
 
 #navegador.ir_para("login")
 

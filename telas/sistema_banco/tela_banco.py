@@ -181,4 +181,5 @@ class TelaMenuBanco(Tela):
     def rodar(self):
         """Executa a lógica da tela."""
         while True:
-            self.desenhar(pygame.display.get_surface())                                    
+            self.desenhar(pygame.display.get_surface())
+
