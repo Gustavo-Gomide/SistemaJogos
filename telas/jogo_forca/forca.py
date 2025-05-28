@@ -2,7 +2,7 @@ import pygame
 import random
 import sys
 from utilitarios.Aprincipal_widgets import Tela, Botao, Cores, TextoFormatado, Fontes
-from utilitarios.musicas import Musicas
+from utilitarios.musicas import Efeitos, Musicas
 from databases.forca_database import ForcaDB
 from databases.cadastro_database import DadosUsuario
 
@@ -54,6 +54,7 @@ class TelaJogoForca(Tela):
                 letra = evento.unicode.upper()
                 if letra.isalpha() and len(letra) == 1:
                     if letra in self.palavra_secreta:
+                        Musicas.tocar_efeito(Efeitos.correto())
                         self.letras_corretas.add(letra)
 
                         if all(letra in self.letras_corretas for letra in self.palavra_secreta):
@@ -64,6 +65,7 @@ class TelaJogoForca(Tela):
                             self.reiniciar_jogo()
                     else:
                         if letra not in self.letras_erradas:
+                            Musicas.tocar_efeito(Efeitos.incorreto())
                             self.letras_erradas.add(letra)
                             self.tentativas -= 1
                             if self.tentativas == 0:
@@ -133,11 +135,14 @@ class TelaJogoForca(Tela):
             pygame.draw.line(self.tela, Cores.branco(), (base_x + 100, base_y - 50), (base_x + 115, base_y - 30), 2)
 
     def game_over(self):
-        Musicas.tocar_efeito(self.efeito_gameover, volume=0.8)
+        Musicas.tocar_efeito(self.efeito_gameover, volume=self.navegador.volume_efeito)
         apelido = getattr(self.navegador, "apelido_logado", None) or "Visitante"
         id_usuario = getattr(self.navegador, "id_logado", None)
-        ForcaDB.registrar_partida(apelido, self.pontuacao, id_usuario=id_usuario)
-        DadosUsuario.atualizar_pontuacao_jogo(apelido, "forca", self.pontuacao, tempo=120)
+        if id_usuario:
+            ForcaDB.registrar_partida(apelido, self.pontuacao, id_usuario=id_usuario)
+            DadosUsuario.atualizar_pontuacao_jogo(apelido, "forca", self.pontuacao, tempo=120)
+        else:
+            ForcaDB.registrar_partida(apelido, self.pontuacao)
 
         # Limpa a tela
         self.tela.fill((0, 0, 0))

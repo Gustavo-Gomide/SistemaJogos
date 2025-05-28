@@ -1,7 +1,7 @@
 import pygame
 import random
 from utilitarios.Aprincipal_widgets import Tela, Botao, Cores, TextoFormatado, Fontes
-from utilitarios.musicas import Musicas
+from utilitarios.musicas import Efeitos, Musicas
 from databases.flappy_database import FlappyDB
 from databases.cadastro_database import DadosUsuario
 
@@ -60,10 +60,9 @@ class TelaJogoFlappy(Tela):
         self.fonte = pygame.font.SysFont("consolas", 32)
         self.clock = pygame.time.Clock()
         self.spawn_timer = 0
-        self.efeito_ponto = "coins"
-        self.efeito_gameover = "fim"
-        self.musica_fundo = "flappy"
-        Musicas.tocar_fundo(self.musica_fundo, volume=0.5)
+        self.efeito_ponto = Efeitos.correto()
+        self.efeito_pulo = Efeitos.coins()
+        self.efeito_gameover = Efeitos.empate()
 
         self.adicionar_componente(Botao(
             x=20, y=20, largura=120, altura=38, texto="Voltar",
@@ -86,8 +85,9 @@ class TelaJogoFlappy(Tela):
                     pygame.quit()
                     return
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_SPACE or event.key == pygame.K_UP:
+                    if event.key == pygame.K_SPACE or event.key == pygame.K_UP or event.key == pygame.K_w:
                         self.passaro.pular()
+                        Musicas.tocar_efeito(Efeitos.coins())
                     if event.key == pygame.K_ESCAPE:
                         self.voltar_menu()
                         return
@@ -123,7 +123,7 @@ class TelaJogoFlappy(Tela):
         self.tela.fill((135, 206, 250))
         self.tudo.draw(self.tela)
         texto = self.fonte.render(f"Pontos: {int(self.pontuacao)}", True, (0, 0, 0))
-        self.tela.blit(texto, (250, 20))
+        self.tela.blit(texto, (0, 20))
         pygame.display.flip()
 
     def game_over(self):
@@ -134,15 +134,18 @@ class TelaJogoFlappy(Tela):
         id_usuario = None
         if apelido != "Visitante":
             usuarios = DadosUsuario.listar_usuarios()
-            for u in usuarios:
-                if u[3] == apelido:  # Assuming apelido is at index 3
-                    id_usuario = u[0]  # Assuming id is at index 0
-                    break
+            if usuarios:
+                for u in usuarios:
+                    if u[3] == apelido:  # Assuming apelido is at index 3
+                        id_usuario = u[0]  # Assuming id is at index 0
+                        break
         
-        # Register game with id_usuario
-        FlappyDB.registrar_partida(id_usuario, apelido, int(self.pontuacao))
-        DadosUsuario.atualizar_pontuacao_jogo(apelido, "flappy", int(self.pontuacao), tempo=120)
-        
+                # Register game with id_usuario
+                FlappyDB.registrar_partida(id_usuario, apelido, int(self.pontuacao))
+                DadosUsuario.atualizar_pontuacao_jogo(apelido, "flappy", self.pontuacao, tempo=120)
+        else:
+            FlappyDB.registrar_partida(apelido=apelido, pontuacao=self.pontuacao)
+    
         fonte = pygame.font.SysFont("consolas", 48)
         texto = fonte.render("Game Over!", True, (200, 0, 0))
         self.tela.blit(texto, (60, 250))

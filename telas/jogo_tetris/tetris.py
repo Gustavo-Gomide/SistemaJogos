@@ -1,7 +1,7 @@
 import pygame
 import random
 from utilitarios.Aprincipal_widgets import Tela, Botao, Cores, TextoFormatado, Fontes
-from utilitarios.musicas import Fundos, Musicas
+from utilitarios.musicas import Efeitos, Musicas
 from databases.tetris_database import TetrisDB
 from databases.cadastro_database import DadosUsuario
 
@@ -45,7 +45,6 @@ class TelaJogoTetris(Tela):
         self.grid = [[None for _ in range(self.COLS)] for _ in range(self.ROWS)]
         self.pontuacao = 0
         self.linhas = 0
-        self.fonte = pygame.font.SysFont("consolas", 28)
         self.clock = pygame.time.Clock()
         self.rodando = True
         self.efeito_linha = "correto"
@@ -59,7 +58,7 @@ class TelaJogoTetris(Tela):
             cor_fundo=Cores.cinza(), cor_hover=Cores.cinza_escuro(),
             cor_texto=Cores.branco(),
             funcao=self.voltar_menu,
-            fonte=Fontes.consolas(), tamanho_fonte=20, raio_borda=10
+            tamanho_fonte=20, raio_borda=10
         ))
 
     def nova_peca(self):
@@ -77,16 +76,21 @@ class TelaJogoTetris(Tela):
                     return
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_LEFT:
+                        Musicas.tocar_efeito(Efeitos.clique())
                         self.move(-1)
                     if event.key == pygame.K_RIGHT:
+                        Musicas.tocar_efeito(Efeitos.clique())
                         self.move(1)
                     if event.key == pygame.K_DOWN:
+                        Musicas.tocar_efeito(Efeitos.clique())
                         self.descida()
                     if event.key == pygame.K_UP:
+                        Musicas.tocar_efeito(Efeitos.clique())
                         self.peca.rotate()
                         if self.colide():
                             for _ in range(3): self.peca.rotate()
                     if event.key == pygame.K_ESCAPE:
+                        Musicas.tocar_efeito(Efeitos.sair())
                         self.voltar_menu()
                         return
 
@@ -178,14 +182,17 @@ class TelaJogoTetris(Tela):
         id_usuario = None
         if apelido != "Visitante":
             usuarios = DadosUsuario.listar_usuarios()
-            for u in usuarios:
-                if u[3] == apelido:  # Assuming apelido is at index 3
-                    id_usuario = u[0]  # Assuming id is at index 0
-                    break
+            if usuarios:
+                for u in usuarios:
+                    if u[3] == apelido:  # Assuming apelido is at index 3
+                        id_usuario = u[0]  # Assuming id is at index 0
+                        break
         
-        # Register game with id_usuario
-        TetrisDB.registrar_partida(id_usuario, apelido, self.pontuacao, self.linhas)
-        DadosUsuario.atualizar_pontuacao_jogo(apelido, "tetris", self.pontuacao, tempo=120)
+                # Register game with id_usuario
+                TetrisDB.registrar_partida(id_usuario, apelido, self.pontuacao, self.linhas)
+                DadosUsuario.atualizar_pontuacao_jogo(apelido, "tetris", self.pontuacao, tempo=120)
+        else:
+            TetrisDB.registrar_partida(apelido=apelido, pontuacao=self.pontuacao, linhas=self.linhas)
         
         fonte = pygame.font.SysFont("consolas", 48)
         texto = fonte.render("Game Over!", True, (200, 0, 0))

@@ -61,13 +61,10 @@ from telas.jogo_forca.forca_menu import TelaMenuForca
 from telas.jogo_forca.forca_rank import TelaRankForca
 from telas.jogo_forca.forca_historico import TelaHistoricoForca
 
-from telas.sistema_banco.sistema_banco import TelaBanco # Importa a tela do sistema bancário
-from telas.sistema_banco.sistema_banco import TelaLogin
-from telas.sistema_banco.sistema_banco import TelaRegistro
-from telas.sistema_banco.sistema_banco import TelaMenuBanco
+from telas.sistema_banco.sistema_banco import TelaBanco,TelaRegistro,TelaMenuBanco,TelaLogin # Importa a tela do sistema bancário
 
 # Importa funções para criar o banco de dados e tabelas
-from databases.musica_anterior import MusicaAnterior # Musica Anterior é uma classe que gerencia a música anterior tocada no menu
+from databases.musica_anterior import MusicaAnterior # Musica Anterior é uma classe que gerencia a música anterior tocada no men
 from databases.cadastro_database import DadosUsuario # Classe para gerenciar usuários no banco de dados
 from databases.PongPong_database import PongPongDB # Classe para gerenciar partidas do PongPong
 from databases.velha_database import BancoDadosVelha # Classe para gerenciar o jogo da velha no banco de dados
@@ -148,12 +145,12 @@ navegador.registrar_tela("jogo forca", TelaJogoForca)
 navegador.registrar_tela("ranking forca", TelaRankForca)
 navegador.registrar_tela("historico forca", TelaHistoricoForca)
 
-navegador.registrar_tela("sistema bancário", TelaBanco) # Tela do sistema bancário
+# Tela do sistema bancário
+navegador.registrar_tela("sistema bancário", TelaBanco)
 navegador.registrar_tela("login", TelaLogin)
 navegador.registrar_tela("registro", TelaRegistro)
-navegador.registrar_tela("menu_banco", TelaMenuBanco)
 
-#navegador.ir_para("login")
+#navegador.ir_para("menu_banco")
 
 # (adicione outras telas aqui se criar mais jogos ou funcionalidades...)
 

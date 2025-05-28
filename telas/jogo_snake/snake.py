@@ -1,7 +1,7 @@
 import pygame
 import random
 from utilitarios.Aprincipal_widgets import Tela, Botao, Cores, TextoFormatado, Fontes
-from utilitarios.musicas import Musicas
+from utilitarios.musicas import Efeitos, Musicas
 from databases.Snake_database import SnakeDB
 from databases.cadastro_database import DadosUsuario
 
@@ -24,6 +24,7 @@ class TelaJogoSnake(Tela):
         self.efeito_ponto = "coins"
         self.efeito_gameover = "fim"
         self.musica_fundo = "snake"
+        self.velocidade =6
         Musicas.tocar_fundo(self.musica_fundo, volume=0.5)
         self.adicionar_componente(Botao(
             x=10, y=10, largura=120, altura=38, texto="Voltar",
@@ -36,7 +37,7 @@ class TelaJogoSnake(Tela):
     def rodar(self):
         self.reset()
         while self.rodando:
-            self.clock.tick(12)
+            self.clock.tick(self.velocidade)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.rodando = False
@@ -44,12 +45,16 @@ class TelaJogoSnake(Tela):
                     return
                 if event.type == pygame.KEYDOWN:
                     if (event.key == pygame.K_UP or event.key == pygame.K_w) and self.direcao != (0, 1):
+                        Musicas.tocar_efeito(Efeitos.clique())
                         self.direcao = (0, -1)
                     elif (event.key == pygame.K_DOWN or event.key == pygame.K_s) and self.direcao != (0, -1):
+                        Musicas.tocar_efeito(Efeitos.clique())
                         self.direcao = (0, 1)
                     elif (event.key == pygame.K_LEFT or event.key == pygame.K_a) and self.direcao != (1, 0):
+                        Musicas.tocar_efeito(Efeitos.clique())
                         self.direcao = (-1, 0)
                     elif (event.key == pygame.K_RIGHT or event.key == pygame.K_d) and self.direcao != (-1, 0):
+                        Musicas.tocar_efeito(Efeitos.clique())
                         self.direcao = (1, 0)
                     elif event.key == pygame.K_ESCAPE:
                         self.voltar_menu()
@@ -106,19 +111,24 @@ class TelaJogoSnake(Tela):
 
     def game_over(self):
         apelido = getattr(self.navegador, "apelido_logado", None) or "Visitante"
+        Musicas.tocar_efeito(Efeitos.perdeu())
         
         # Busca o id do usuário se estiver logado
         id_usuario = None
         if apelido != "Visitante":
             usuarios = DadosUsuario.listar_usuarios()
-            for u in usuarios:
-                if u[3] == apelido:  # Ajuste o índice conforme sua tabela
-                    id_usuario = u[0]
-                    break
+            if usuarios:
+                for u in usuarios:
+                    if u[3] == apelido:  # Assuming apelido is at index 3
+                        id_usuario = u[0]  # Assuming id is at index 0
+                        break
         
-        print(f"Registrando partida: id={id_usuario}, apelido={apelido}, pontos={self.pontuacao}")  # DEBUG
-        SnakeDB.registrar_partida(id_usuario, apelido, self.pontuacao)
-        DadosUsuario.atualizar_pontuacao_jogo(apelido, "snake", self.pontuacao, tempo=120)
+                # Register game with id_usuario
+                SnakeDB.registrar_partida(id_usuario, apelido, self.pontuacao)
+                DadosUsuario.atualizar_pontuacao_jogo(apelido, "snake", self.pontuacao, tempo=120)
+        else:
+            SnakeDB.registrar_partida(apelido=apelido, pontuacao=self.pontuacao)
+        
         fonte = pygame.font.SysFont("consolas", 48)
         texto = fonte.render("Game Over!", True, (200, 0, 0))
         self.tela.blit(texto, (60, 160))

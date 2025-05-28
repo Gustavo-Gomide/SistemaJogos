@@ -5,7 +5,7 @@ class DinoDB(BancoDados):
     def criar_tabela(cls):
         colunas = {
             "id": "INT AUTO_INCREMENT PRIMARY KEY",
-            "id_usuario": "INT",
+            "id_usuario": "INT NULL",
             "apelido": "VARCHAR(50) NOT NULL",
             "pontuacao": "INT NOT NULL",
             "data_partida": "DATETIME DEFAULT CURRENT_TIMESTAMP"
@@ -16,7 +16,7 @@ class DinoDB(BancoDados):
         BancoDados.criar_tabela_avancada("dino_partidas", colunas, foreign_keys)
 
     @classmethod
-    def registrar_partida(cls, id_usuario, apelido, pontuacao):
+    def registrar_partida(cls, id_usuario=None, apelido='', pontuacao=0):
         dados = {
             "id_usuario": id_usuario,
             "apelido": apelido,

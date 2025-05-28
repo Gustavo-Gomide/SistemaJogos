@@ -1,6 +1,6 @@
 from utilitarios.Aprincipal_widgets import Tela, Botao, Cores, TextoFormatado, Fontes, Retangulo, Circulo
 from utilitarios.imagens import carregar_imagem
-from utilitarios.musicas import Musicas  # Adicione este import
+from utilitarios.musicas import Efeitos, Musicas
 from databases.PongPong_database import PongPongDB
 from databases.cadastro_database import DadosUsuario
 import pygame
@@ -21,7 +21,7 @@ class TelaJogoPongPong(Tela):
     fundo_cor = Cores.azul_petroleo()
     fundo_imagem = None
     velocidade_bola = 5  # <--- Ajustável
-    tempo_espera_bola = 2  # segundos (ajustável)
+    tempo_espera_bola = 5  # segundos (ajustável)
 
     # Efeitos sonoros e música
     efeito_gol = 'fim'         # Nome do efeito para gol
@@ -38,17 +38,19 @@ class TelaJogoPongPong(Tela):
         )
         self.navegador = navegador
 
+        self.som_fim = Efeitos.venceu()
+
         # Título retrô com sombra
         self.adicionar_componente(
             TextoFormatado(
-                x=452, y=62, texto="PONGPONG",
+                x=452, y=62, texto="PONG  PONG",
                 tamanho=44, cor_texto=Cores.cinza_escuro(),
                 fonte_nome=Fontes.consolas(), centralizado=True
             )
         )
         self.adicionar_componente(
             TextoFormatado(
-                x=450, y=60, texto="PONGPONG",
+                x=450, y=60, texto="PONG  PONG",
                 tamanho=44, cor_texto=Cores.amarelo_ouro(),
                 fonte_nome=Fontes.consolas(), centralizado=True
             )
@@ -189,6 +191,7 @@ class TelaJogoPongPong(Tela):
             self.mostrar_vencedor(vencedor)
 
     def mostrar_vencedor(self, vencedor):
+        Musicas.tocar_efeito(self.som_fim)
         import time
         tempo_jogado = int(time.time() - getattr(self, "tempo_inicio", time.time()))
 
