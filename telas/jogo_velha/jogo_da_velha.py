@@ -1,7 +1,6 @@
 import pygame
 from utilitarios.Aprincipal_widgets import Tela, Botao, CaixaTexto, TextoFormatado, Cores, Fontes
 from utilitarios.musicas import Musicas, Fundos
-import time
 
 
 class MenuJogoDaVelhaTela(Tela):
