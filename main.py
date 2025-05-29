@@ -3,7 +3,7 @@ from utilitarios.Aprincipal_database import BancoDados # Classe base para opera√
 BancoDados.configurar_conexao(
     host="localhost",
     user="root",  # Your MySQL username
-    password="lui1234",  # Your MySQL password
+    password="",  # Your MySQL password
     database="jogos"  # Nome do banco de dados que ser√° criado
 )
 
